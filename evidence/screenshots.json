@@ -1,0 +1,262 @@
+[
+  {
+    "title": "Desktop entry: log in",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/01-desktop-login.png",
+    "relative": "screenshots/01-desktop-login.png"
+  },
+  {
+    "title": "Invalid credentials: feedback",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/02-login-error.png",
+    "relative": "screenshots/02-login-error.png"
+  },
+  {
+    "title": "Authenticated dashboard",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/03-desktop-dashboard.png",
+    "relative": "screenshots/03-desktop-dashboard.png"
+  },
+  {
+    "title": "Application index",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/04-app-index.png",
+    "relative": "screenshots/04-app-index.png"
+  },
+  {
+    "title": "Desktop changelist",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/05-desktop-changelist.png",
+    "relative": "screenshots/05-desktop-changelist.png"
+  },
+  {
+    "title": "Search, filters and ordering",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/13-search-filter-sort.png",
+    "relative": "screenshots/13-search-filter-sort.png"
+  },
+  {
+    "title": "List editing: saved",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/14-list-edit-saved.png",
+    "relative": "screenshots/14-list-edit-saved.png"
+  },
+  {
+    "title": "List editing: invalid value",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/36-list-validation.png",
+    "relative": "screenshots/36-list-validation.png"
+  },
+  {
+    "title": "Add form: date picker",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/06-add-form-calendar.png",
+    "relative": "screenshots/06-add-form-calendar.png"
+  },
+  {
+    "title": "Add form: relations, inlines and upload",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/07-add-form-inlines-upload.png",
+    "relative": "screenshots/07-add-form-inlines-upload.png"
+  },
+  {
+    "title": "Form validation: values retained and error focused",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/08-validation-feedback.png",
+    "relative": "screenshots/08-validation-feedback.png"
+  },
+  {
+    "title": "Save and continue: persisted result",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/09-saved-continue.png",
+    "relative": "screenshots/09-saved-continue.png"
+  },
+  {
+    "title": "Object history and audit entry",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/10-object-history.png",
+    "relative": "screenshots/10-object-history.png"
+  },
+  {
+    "title": "Single delete: confirmation",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/11-delete-confirmation.png",
+    "relative": "screenshots/11-delete-confirmation.png"
+  },
+  {
+    "title": "Single delete: cancellation returns to the object",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/38-delete-cancelled.png",
+    "relative": "screenshots/38-delete-cancelled.png"
+  },
+  {
+    "title": "Single delete: completed",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/12-delete-finished.png",
+    "relative": "screenshots/12-delete-finished.png"
+  },
+  {
+    "title": "Custom bulk action: confirmation",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/15-bulk-action-confirmation.png",
+    "relative": "screenshots/15-bulk-action-confirmation.png"
+  },
+  {
+    "title": "Custom bulk action: completed",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/16-bulk-action-finished.png",
+    "relative": "screenshots/16-bulk-action-finished.png"
+  },
+  {
+    "title": "Bulk delete: confirmation",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/17-bulk-delete-confirmation.png",
+    "relative": "screenshots/17-bulk-delete-confirmation.png"
+  },
+  {
+    "title": "Bulk delete: completed",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/41-bulk-delete-finished.png",
+    "relative": "screenshots/41-bulk-delete-finished.png"
+  },
+  {
+    "title": "Related-object popup: add author",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/18-related-author-popup.png",
+    "relative": "screenshots/18-related-author-popup.png"
+  },
+  {
+    "title": "Popup and raw-ID selections returned to the form",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/19-related-records-selected.png",
+    "relative": "screenshots/19-related-records-selected.png"
+  },
+  {
+    "title": "Related-object popup: delete confirmation",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/39-popup-delete-confirmation.png",
+    "relative": "screenshots/39-popup-delete-confirmation.png"
+  },
+  {
+    "title": "Related-object popup: deletion returned to the form",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/40-popup-delete-finished.png",
+    "relative": "screenshots/40-popup-delete-finished.png"
+  },
+  {
+    "title": "Protected related object: deletion refused",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/20-protected-deletion.png",
+    "relative": "screenshots/20-protected-deletion.png"
+  },
+  {
+    "title": "Reactive feedback during a pending request",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/33-loading-feedback.png",
+    "relative": "screenshots/33-loading-feedback.png"
+  },
+  {
+    "title": "Failed request: unsaved draft retained",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/31-request-error-retained.png",
+    "relative": "screenshots/31-request-error-retained.png"
+  },
+  {
+    "title": "Failed request: successful recovery save",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/44-request-error-recovered.png",
+    "relative": "screenshots/44-request-error-recovered.png"
+  },
+  {
+    "title": "Permission boundary: read-only user",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/34-view-only-permissions.png",
+    "relative": "screenshots/34-view-only-permissions.png"
+  },
+  {
+    "title": "Expired session: login with return URL",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/42-session-expiry-login.png",
+    "relative": "screenshots/42-session-expiry-login.png"
+  },
+  {
+    "title": "User/group filtered permission widgets",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/35-user-permission-widgets.png",
+    "relative": "screenshots/35-user-permission-widgets.png"
+  },
+  {
+    "title": "UserAdmin: new user saved",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/45-user-created.png",
+    "relative": "screenshots/45-user-created.png"
+  },
+  {
+    "title": "UserAdmin: password reset completed",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/46-admin-password-reset.png",
+    "relative": "screenshots/46-admin-password-reset.png"
+  },
+  {
+    "title": "Custom AdminSite and namespace",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/32-custom-admin-site.png",
+    "relative": "screenshots/32-custom-admin-site.png"
+  },
+  {
+    "title": "Custom view with explicit media lifecycle",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/37-custom-media-lifecycle.png",
+    "relative": "screenshots/37-custom-media-lifecycle.png"
+  },
+  {
+    "title": "JavaScript disabled: native CRUD saved",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/43-no-javascript-saved.png",
+    "relative": "screenshots/43-no-javascript-saved.png"
+  },
+  {
+    "title": "Mobile entry: log in",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/21-mobile-login.png",
+    "relative": "screenshots/21-mobile-login.png"
+  },
+  {
+    "title": "Mobile dashboard",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/22-mobile-dashboard.png",
+    "relative": "screenshots/22-mobile-dashboard.png"
+  },
+  {
+    "title": "Mobile list with contained table scrolling",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/23-mobile-list.png",
+    "relative": "screenshots/23-mobile-list.png"
+  },
+  {
+    "title": "Mobile navigation opened; keyboard focus visible",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/24-mobile-navigation.png",
+    "relative": "screenshots/24-mobile-navigation.png"
+  },
+  {
+    "title": "Mobile filters opened",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/26-mobile-filters.png",
+    "relative": "screenshots/26-mobile-filters.png"
+  },
+  {
+    "title": "Mobile add form: usable widths and save actions",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/27-mobile-add-form.png",
+    "relative": "screenshots/27-mobile-add-form.png"
+  },
+  {
+    "title": "Mobile save completed",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/28-mobile-saved.png",
+    "relative": "screenshots/28-mobile-saved.png"
+  },
+  {
+    "title": "Mobile password validation error",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/29-mobile-password-error.png",
+    "relative": "screenshots/29-mobile-password-error.png"
+  },
+  {
+    "title": "Mobile password change completed",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/30-mobile-password-done.png",
+    "relative": "screenshots/30-mobile-password-done.png"
+  },
+  {
+    "title": "Logout completed",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/25-logout.png",
+    "relative": "screenshots/25-logout.png"
+  },
+  {
+    "title": "Fresh wheel installation \u00b7 Django 5.2 \u00b7 desktop save",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/fresh_install/django52/wheel-saved-desktop.png",
+    "relative": "../fresh_install/django52/wheel-saved-desktop.png"
+  },
+  {
+    "title": "Fresh wheel installation \u00b7 Django 5.2 \u00b7 mobile save",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/fresh_install/django52/wheel-saved-mobile.png",
+    "relative": "../fresh_install/django52/wheel-saved-mobile.png"
+  },
+  {
+    "title": "Fresh wheel installation \u00b7 Django 6.0 \u00b7 desktop save",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/fresh_install/django60/wheel-saved-desktop.png",
+    "relative": "../fresh_install/django60/wheel-saved-desktop.png"
+  },
+  {
+    "title": "Fresh wheel installation \u00b7 Django 6.0 \u00b7 mobile save",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/fresh_install/django60/wheel-saved-mobile.png",
+    "relative": "../fresh_install/django60/wheel-saved-mobile.png"
+  },
+  {
+    "title": "Fresh wheel installation \u00b7 Django 6.1 \u00b7 desktop save",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/fresh_install/django61/wheel-saved-desktop.png",
+    "relative": "../fresh_install/django61/wheel-saved-desktop.png"
+  },
+  {
+    "title": "Fresh wheel installation \u00b7 Django 6.1 \u00b7 mobile save",
+    "path": "/Users/hiten/workspace/djang-admin-htmx/fresh_install/django61/wheel-saved-mobile.png",
+    "relative": "../fresh_install/django61/wheel-saved-mobile.png"
+  }
+]

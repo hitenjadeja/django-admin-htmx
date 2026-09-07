@@ -1,0 +1,6 @@
+{
+  "version": "4.0.0",
+  "status": "stable release",
+  "source": "https://cdn.jsdelivr.net/npm/htmx.org@4.0.0/dist/htmx.js",
+  "sha256": "5d0833e3b435d357221955566f46fa378cb653c4f119c0a8533b4bb4098cf9ad"
+}
