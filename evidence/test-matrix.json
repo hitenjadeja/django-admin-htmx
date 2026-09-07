@@ -1,0 +1,30 @@
+[
+  {
+    "environment": "django52",
+    "django": "5.2.17",
+    "python": "Python 3.13.0",
+    "exit_code": 0,
+    "summary": "64 passed in 28.05s"
+  },
+  {
+    "environment": "django60",
+    "django": "6.0.8",
+    "python": "Python 3.13.0",
+    "exit_code": 0,
+    "summary": "64 passed in 32.35s"
+  },
+  {
+    "environment": "django61",
+    "django": "6.1.1",
+    "python": "Python 3.13.0",
+    "exit_code": 0,
+    "summary": "64 passed in 36.42s"
+  },
+  {
+    "environment": "python312-django61",
+    "django": "6.1.1",
+    "python": "Python 3.12.7",
+    "exit_code": 0,
+    "summary": "64 passed in 35.31s"
+  }
+]
