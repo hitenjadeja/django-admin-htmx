@@ -1,0 +1,13 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% block content %}
+<p>Archive these books? You can change their status again later.</p>
+<ul>{% for book in books %}<li>{{ book }}</li>{% endfor %}</ul>
+<form method="post">{% csrf_token %}
+{% for book in books %}<input type="hidden" name="{{ action_checkbox_name }}" value="{{ book.pk }}">{% endfor %}
+<input type="hidden" name="action" value="archive">
+<input type="hidden" name="confirm_archive" value="yes">
+<input type="submit" value="Confirm archive">
+<a href="." class="button">Cancel</a>
+</form>
+{% endblock %}
