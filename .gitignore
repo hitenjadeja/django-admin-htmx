@@ -1,0 +1,16 @@
+.venvs/
+.cache/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+*.sqlite3
+example/media/
+example/staticfiles/
+fresh_install/**/media/
+fresh_install/**/staticfiles/
+evidence/*.log
+evidence/browser-results/
+.DS_Store
