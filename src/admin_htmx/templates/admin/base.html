@@ -1,13 +1,13 @@
 {% extends "admin/base.html" %}
-{% load static i18n %}
+{% load static i18n admin_htmx %}
 {% block extrahead %}
 {{ block.super }}
 <meta name="admin-htmx-root" content="{% url 'admin:index' %}">
 <meta name="admin-htmx-labels" data-loading="{% translate 'Loading…' %}" data-error="{% translate 'The request could not be completed. Your entries are still here. Please try again.' %}" data-navigation="{% translate 'Navigation' %}" data-filters="{% translate 'Filters' %}">
-<script src="{% static 'admin_htmx/vendor/htmx-4.0.0.js' %}" defer></script>
-<script src="{% static 'admin_htmx/admin.js' %}" defer></script>
+<script src="{% static 'admin_htmx/vendor/htmx-4.0.0.js' %}" defer {% admin_htmx_nonce %}></script>
+<script src="{% static 'admin_htmx/admin.js' %}" defer {% admin_htmx_nonce %}></script>
 {% endblock %}
 {% block responsive %}
 {{ block.super }}
-<link rel="stylesheet" href="{% static 'admin_htmx/admin.css' %}">
+<link rel="stylesheet" href="{% static 'admin_htmx/admin.css' %}" {% admin_htmx_nonce %}>
 {% endblock %}

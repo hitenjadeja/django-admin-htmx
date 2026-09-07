@@ -1,0 +1,7 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+{% block content %}
+<p id="report-status">Preparing report…</p>
+<p><a href="{% url 'editorial:catalog_book_changelist' %}">Browse books</a></p>
+<script src="{% static 'catalog/report.js' %}" {% if csp_nonce %}nonce="{{ csp_nonce }}"{% endif %} {% if not native %}data-admin-htmx-load="once"{% endif %}></script>
+{% endblock %}

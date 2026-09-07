@@ -4,9 +4,9 @@ from html import escape
 from html.parser import HTMLParser
 from urllib.parse import urljoin, urlsplit
 
+from django import VERSION
 from django.conf import settings
 from django.contrib.staticfiles.storage import staticfiles_storage
-from django.http import HttpResponse
 from django.urls import Resolver404, resolve
 from django.utils.cache import patch_vary_headers
 
@@ -82,7 +82,7 @@ class ScriptInventory(HTMLParser):
 
 
 class AdminHtmxMiddleware:
-    """Install near the start of MIDDLEWARE (before compression/cache middleware)."""
+    """Install after compression/cache middleware; responses run in reverse order."""
 
     def __init__(self, get_response):
         self.get_response = get_response
@@ -113,6 +113,8 @@ class AdminHtmxMiddleware:
                 response.content = b""
                 del response["Location"]
                 response["HX-Redirect"] = location
+            if "Content-Length" in response:
+                response["Content-Length"] = "0"
             return response
         if response.streaming or response.status_code != 200:
             return response
@@ -125,6 +127,8 @@ class AdminHtmxMiddleware:
         root = html.split(marker, 1)[1].split('"', 1)[0]
         runtime = {staticfiles_storage.url("admin_htmx/" + path) for path in ("admin.js", "vendor/htmx-4.0.0.js")}
         stock = {staticfiles_storage.url("admin/js/" + path) for path in STOCK_SCRIPTS}
+        if VERSION < (6, 0):
+            stock.add(staticfiles_storage.url("admin/js/unusable_password_field.js"))
         # Select2 translations are optional stock media with a locale-specific name.
         from django.contrib.admin.widgets import SELECT2_TRANSLATIONS
         stock.update(staticfiles_storage.url(f"admin/js/vendor/select2/i18n/{lang}.js") for lang in set(SELECT2_TRANSLATIONS.values()))

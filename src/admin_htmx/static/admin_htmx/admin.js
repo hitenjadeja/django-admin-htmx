@@ -2,6 +2,8 @@
 (() => {
     'use strict';
     if (window.AdminHTMX) return;
+    const nonce = document.currentScript?.nonce;
+    if (nonce) window.htmx.config.inlineScriptNonce = nonce;
     const loaded = new Set();
     const pageListeners = [];
     let hydrating = false;
@@ -11,7 +13,7 @@
     const root = document.querySelector('meta[name="admin-htmx-root"]')?.content;
     const emit = (name, detail = {}) => document.dispatchEvent(new CustomEvent(`admin-htmx:${name}`, {detail}));
     const stock = (url, name) => new URL(url || location.href, location.href).pathname.replace(/\.[a-f0-9]{12}\./g, '.').endsWith(`/admin/js/${name}`);
-    const isPageScript = url => ['theme.js', 'nav_sidebar.js', 'filters.js', 'cancel.js', 'prepopulate_init.js', 'change_form.js'].some(name => stock(url, name));
+    const isPageScript = url => ['theme.js', 'nav_sidebar.js', 'filters.js', 'cancel.js', 'unusable_password_field.js', 'prepopulate_init.js', 'change_form.js'].some(name => stock(url, name));
     const owned = ctx => ctx?.request?.headers?.['X-Admin-HTMX'] === 'true' || ctx?.request?.headers?.['HX-History-Restore-Request'] === 'true';
 
     // Capture only global listeners registered during synchronous stock-widget
@@ -89,8 +91,9 @@
         const key = src || node.textContent;
         if (loaded.has(key) && (once || (src && !isPageScript(src) && node.dataset.adminHtmxLoad !== 'page'))) return false;
         const element = document.createElement('script');
+        if (nonce) element.nonce = nonce;
         for (const attr of node.attributes) {
-            if (!['src', 'type', 'id'].includes(attr.name) && !attr.name.startsWith('data-admin-htmx')) element.setAttribute(attr.name, attr.value);
+            if (!['src', 'type', 'id', 'nonce'].includes(attr.name) && !attr.name.startsWith('data-admin-htmx')) element.setAttribute(attr.name, attr.value);
         }
         if (node.dataset.adminHtmxType) element.type = node.dataset.adminHtmxType;
         const $ = window.django?.jQuery;
@@ -126,6 +129,13 @@
                     element.onerror = () => reject(new Error(`Could not load ${src}`));
                     document.head.append(element);
                 });
+            } else if (element.type === 'module') {
+                element.textContent = node.textContent;
+                await new Promise((resolve, reject) => {
+                    element.onload = resolve;
+                    element.onerror = reject;
+                    document.head.append(element);
+                });
             } else {
                 element.textContent = node.textContent;
                 document.head.append(element);
@@ -146,9 +156,6 @@
 
     function initializeWidgets(newActions) {
         const $ = window.django?.jQuery;
-        if ($?.fn.prepopulate) {
-            // prepopulate_init already used the data in the page's constants.
-        }
         if ($?.fn.stackedFormset) {
             $('.js-inline-admin-formset').each(function () {
                 const data = $(this).data();
@@ -283,6 +290,7 @@
         desired.forEach(el => {
             if (el.tagName === 'LINK' && existing.has(el.href)) return;
             const clone = el.cloneNode(true);
+            if (nonce) clone.nonce = nonce;
             clone.dataset.adminHtmxHead = '';
             document.head.append(clone);
         });

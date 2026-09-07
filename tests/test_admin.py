@@ -1,5 +1,4 @@
 import json
-from urllib.parse import urlparse
 import pytest
 from bs4 import BeautifulSoup
 from django.contrib.admin.models import LogEntry
@@ -223,3 +222,50 @@ def test_custom_media_requires_explicit_lifecycle_optin():
 def test_system_check_for_missing_middleware():
     with override_settings(MIDDLEWARE=[]):
         assert "admin_htmx.W002" in [warning.id for warning in check_configuration(None)]
+
+
+def test_existing_inline_update_delete_and_upload_clear(auth_client, data, tmp_path, settings):
+    settings.MEDIA_ROOT = tmp_path
+    book = data['book']
+    first = Chapter.objects.create(book=book, title='Keep', position=1)
+    second = Chapter.objects.create(book=book, title='Remove', position=2)
+    book.attachment.save('clear-me.txt', SimpleUploadedFile('clear-me.txt', b'clear attachment'))
+    payload = book_payload(data['author'], title=book.title, slug=book.slug, **{
+        'chapter_set-TOTAL_FORMS': '2', 'chapter_set-INITIAL_FORMS': '2',
+        'chapter_set-0-id': first.pk, 'chapter_set-0-book': book.pk, 'chapter_set-0-title': 'Updated chapter', 'chapter_set-0-position': '3',
+        'chapter_set-1-id': second.pk, 'chapter_set-1-book': book.pk, 'chapter_set-1-title': 'Remove', 'chapter_set-1-position': '2', 'chapter_set-1-DELETE': 'on',
+        'attachment-clear': 'on',
+    })
+    response = auth_client.post(f'/admin/catalog/book/{book.pk}/change/', payload, **HX)
+    assert 'HX-Location' in response
+    assert not Chapter.objects.filter(pk=second.pk).exists()
+    first.refresh_from_db()
+    assert first.title == 'Updated chapter' and first.position == 3
+    book.refresh_from_db()
+    assert not book.attachment
+
+
+def test_escaped_object_content_and_unknown_htmx_clients(auth_client, data):
+    book = data['book']
+    book.title = '<script>alert("untrusted record")</script>'
+    book.save()
+    response = auth_client.get('/admin/catalog/book/', **HX)
+    assert b'&lt;script&gt;' in response.content
+    assert b'<script>alert("untrusted record")</script>' not in response.content
+    # This middleware must not hijack a separately configured HTMX integration.
+    response = auth_client.post('/admin/catalog/book/add/', book_payload(data['author']), HTTP_HX_REQUEST='true')
+    assert response.status_code == 302 and 'HX-Location' not in response
+
+
+def test_gzip_order_and_compressed_response(auth_client, settings):
+    import gzip
+    adapter = 'admin_htmx.middleware.AdminHtmxMiddleware'
+    gzip_middleware = 'django.middleware.gzip.GZipMiddleware'
+    original = list(settings.MIDDLEWARE)
+    settings.MIDDLEWARE = [gzip_middleware, *original]
+    response = auth_client.get('/admin/', HTTP_ACCEPT_ENCODING='gzip', **HX)
+    assert response['Content-Encoding'] == 'gzip'
+    assert b'admin-htmx-enhanced' in gzip.decompress(response.content)
+    assert response['X-Admin-HTMX-Page'] == 'true'
+    settings.MIDDLEWARE = [adapter, gzip_middleware, *[m for m in original if m != adapter]]
+    assert 'admin_htmx.W003' in [warning.id for warning in check_configuration(None)]

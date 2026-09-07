@@ -1,7 +1,9 @@
 import csv
+import secrets
 from django.contrib import admin, messages
 from django.http import HttpResponse
 from django.template.response import TemplateResponse
+from django.urls import path
 from .models import Author, Book, Chapter, Edition, Note, Tag
 
 
@@ -85,6 +87,20 @@ class EditorialSite(admin.AdminSite):
     site_header = "Editorial · Administration"
     site_title = "Editorial admin"
     index_title = "Editorial workspace"
+
+    def get_urls(self):
+        return [path("report/", self.admin_view(self.report), name="report")] + super().get_urls()
+
+    def report(self, request):
+        request.current_app = self.name
+        nonce = secrets.token_urlsafe(24) if "csp" in request.GET else None
+        response = TemplateResponse(request, "admin/catalog/report.html", {
+            **self.each_context(request), "title": "Editorial report", "native": "native" in request.GET,
+            "csp_nonce": nonce,
+        })
+        if nonce:
+            response["Content-Security-Policy"] = f"script-src 'nonce-{nonce}'; object-src 'none'; base-uri 'self'"
+        return response
 
 
 editorial_site = EditorialSite(name="editorial")

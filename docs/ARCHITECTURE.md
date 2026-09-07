@@ -23,6 +23,12 @@ Server errors leave the current form in place with a focused error message. The 
 - Add `data-admin-htmx="off"` to a control or wrapper, or `hx-boost="false"`, to keep its links/forms native. Use `ADMIN_HTMX_ENABLED = False` to disable enhancement globally.
 - Existing `hx-get` / `hx-post` controls are left to their owner. This adapter should be the only HTMX core loaded on an enhanced admin page; do not add a second global HTMX build.
 
+## CSP and response wrappers
+
+The `csp_nonce` template context convention is supported on every Django series in the package's range. The two runtime scripts and dynamically loaded media use the active document nonce; a later HTMX response cannot replace that document's policy. A nonce-only script-src policy without unsafe-eval is covered by a real browser test. Other directives and third-party script requirements remain an integration concern.
+
+Place the adapter after compression, conditional-response and cache-write middleware in MIDDLEWARE. Django processes responses in reverse order. Incorrect ordering is reported by system check admin_htmx.W003; compressed responses are never parsed as HTML. GZip transport is covered by an integration test.
+
 ## Supported boundaries
 
 Stock related-object popups keep Django's opener/dismiss protocol and use ordinary full pages. Autocomplete uses Django's existing AJAX endpoint; its transport is Select2's own AJAX. These are intentional compatibility boundaries, not rewritten protocols. Basic HTML login and CRUD work without JavaScript; JavaScript-specific widgets have Django's usual non-JavaScript limitations. File inputs must be reselected after a validation response, as in native Django.

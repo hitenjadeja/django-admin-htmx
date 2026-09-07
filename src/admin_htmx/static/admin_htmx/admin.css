@@ -117,3 +117,7 @@ html[data-theme="dark"] body.admin-htmx { --link-fg: #90d1bb; --link-selected-fg
     .admin-htmx.admin-htmx-nav-open #nav-sidebar { left: 0; right: 0; margin: 16px; width: calc(100% - 32px); box-sizing: border-box; }
     .admin-htmx #changelist .changelist-footer { flex-wrap: wrap; gap: 12px; }
 }
+@media (max-width: 767px) {
+    /* Django's viewport-based field width assumes different page padding. */
+    .admin-htmx .aligned .form-row > div { width: 100%; box-sizing: border-box; }
+}
