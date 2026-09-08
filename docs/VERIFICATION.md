@@ -1,5 +1,10 @@
 # Verification report
 
+This is the historical local verification report for **0.1.1**. Current releases
+and their checks are available in [GitHub Actions](https://github.com/hitenjadeja/django-admin-htmx/actions)
+and [GitHub Releases](https://github.com/hitenjadeja/django-admin-htmx/releases).
+See [RELEASING.md](RELEASING.md) for the current distribution workflow.
+
 Updated 2026-09-08. Package version 0.1.1, stable vendored HTMX 4.0.0. The source suite contains **49 backend/integration tests and 19 real-browser scenarios**, with multiple workflow assertions per browser scenario. No browser tests are mocked or skipped in the final matrix.
 
 ## Final test matrix

@@ -25,118 +25,118 @@ The nine states are login, dashboard, app index, changelist, change form, histor
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-login-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-login-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-login-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-login-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/1440-light-login-native.png)](../evidence/style-parity/6.1.1/1440-light-login-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/1440-light-login-htmx.png)](../evidence/style-parity/6.1.1/1440-light-login-htmx.png) |
 
 ## dashboard · 1440px · light
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-dashboard-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-dashboard-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-dashboard-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-dashboard-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/1440-light-dashboard-native.png)](../evidence/style-parity/6.1.1/1440-light-dashboard-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/1440-light-dashboard-htmx.png)](../evidence/style-parity/6.1.1/1440-light-dashboard-htmx.png) |
 
 ## changelist · 1440px · light
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-changelist-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-changelist-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-changelist-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-changelist-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/1440-light-changelist-native.png)](../evidence/style-parity/6.1.1/1440-light-changelist-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/1440-light-changelist-htmx.png)](../evidence/style-parity/6.1.1/1440-light-changelist-htmx.png) |
 
 ## change-form · 1440px · light
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-change-form-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-change-form-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-change-form-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-change-form-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/1440-light-change-form-native.png)](../evidence/style-parity/6.1.1/1440-light-change-form-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/1440-light-change-form-htmx.png)](../evidence/style-parity/6.1.1/1440-light-change-form-htmx.png) |
 
 ## delete · 1440px · light
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-delete-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-delete-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-delete-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-light-delete-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/1440-light-delete-native.png)](../evidence/style-parity/6.1.1/1440-light-delete-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/1440-light-delete-htmx.png)](../evidence/style-parity/6.1.1/1440-light-delete-htmx.png) |
 
 ## login · 1440px · dark
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-login-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-login-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-login-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-login-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/1440-dark-login-native.png)](../evidence/style-parity/6.1.1/1440-dark-login-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/1440-dark-login-htmx.png)](../evidence/style-parity/6.1.1/1440-dark-login-htmx.png) |
 
 ## dashboard · 1440px · dark
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-dashboard-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-dashboard-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-dashboard-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-dashboard-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/1440-dark-dashboard-native.png)](../evidence/style-parity/6.1.1/1440-dark-dashboard-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/1440-dark-dashboard-htmx.png)](../evidence/style-parity/6.1.1/1440-dark-dashboard-htmx.png) |
 
 ## changelist · 1440px · dark
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-changelist-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-changelist-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-changelist-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-changelist-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/1440-dark-changelist-native.png)](../evidence/style-parity/6.1.1/1440-dark-changelist-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/1440-dark-changelist-htmx.png)](../evidence/style-parity/6.1.1/1440-dark-changelist-htmx.png) |
 
 ## change-form · 1440px · dark
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-change-form-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-change-form-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-change-form-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-change-form-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/1440-dark-change-form-native.png)](../evidence/style-parity/6.1.1/1440-dark-change-form-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/1440-dark-change-form-htmx.png)](../evidence/style-parity/6.1.1/1440-dark-change-form-htmx.png) |
 
 ## delete · 1440px · dark
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-delete-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-delete-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-delete-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/1440-dark-delete-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/1440-dark-delete-native.png)](../evidence/style-parity/6.1.1/1440-dark-delete-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/1440-dark-delete-htmx.png)](../evidence/style-parity/6.1.1/1440-dark-delete-htmx.png) |
 
 ## login · 390px · light
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-login-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-login-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-login-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-login-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/390-light-login-native.png)](../evidence/style-parity/6.1.1/390-light-login-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/390-light-login-htmx.png)](../evidence/style-parity/6.1.1/390-light-login-htmx.png) |
 
 ## dashboard · 390px · light
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-dashboard-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-dashboard-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-dashboard-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-dashboard-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/390-light-dashboard-native.png)](../evidence/style-parity/6.1.1/390-light-dashboard-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/390-light-dashboard-htmx.png)](../evidence/style-parity/6.1.1/390-light-dashboard-htmx.png) |
 
 ## changelist · 390px · light
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-changelist-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-changelist-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-changelist-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-changelist-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/390-light-changelist-native.png)](../evidence/style-parity/6.1.1/390-light-changelist-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/390-light-changelist-htmx.png)](../evidence/style-parity/6.1.1/390-light-changelist-htmx.png) |
 
 ## change-form · 390px · light
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-change-form-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-change-form-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-change-form-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-change-form-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/390-light-change-form-native.png)](../evidence/style-parity/6.1.1/390-light-change-form-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/390-light-change-form-htmx.png)](../evidence/style-parity/6.1.1/390-light-change-form-htmx.png) |
 
 ## delete · 390px · light
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-delete-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-delete-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-delete-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-light-delete-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/390-light-delete-native.png)](../evidence/style-parity/6.1.1/390-light-delete-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/390-light-delete-htmx.png)](../evidence/style-parity/6.1.1/390-light-delete-htmx.png) |
 
 ## login · 390px · dark
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-login-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-login-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-login-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-login-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/390-dark-login-native.png)](../evidence/style-parity/6.1.1/390-dark-login-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/390-dark-login-htmx.png)](../evidence/style-parity/6.1.1/390-dark-login-htmx.png) |
 
 ## dashboard · 390px · dark
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-dashboard-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-dashboard-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-dashboard-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-dashboard-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/390-dark-dashboard-native.png)](../evidence/style-parity/6.1.1/390-dark-dashboard-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/390-dark-dashboard-htmx.png)](../evidence/style-parity/6.1.1/390-dark-dashboard-htmx.png) |
 
 ## changelist · 390px · dark
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-changelist-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-changelist-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-changelist-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-changelist-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/390-dark-changelist-native.png)](../evidence/style-parity/6.1.1/390-dark-changelist-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/390-dark-changelist-htmx.png)](../evidence/style-parity/6.1.1/390-dark-changelist-htmx.png) |
 
 ## change-form · 390px · dark
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-change-form-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-change-form-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-change-form-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-change-form-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/390-dark-change-form-native.png)](../evidence/style-parity/6.1.1/390-dark-change-form-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/390-dark-change-form-htmx.png)](../evidence/style-parity/6.1.1/390-dark-change-form-htmx.png) |
 
 ## delete · 390px · dark
 
 | Default Django | With HTMX |
 |---|---|
-| [![Default Django](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-delete-native.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-delete-native.png) | [![With HTMX](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-delete-htmx.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/style-parity/6.1.1/390-dark-delete-htmx.png) |
+| [![Default Django](../evidence/style-parity/6.1.1/390-dark-delete-native.png)](../evidence/style-parity/6.1.1/390-dark-delete-native.png) | [![With HTMX](../evidence/style-parity/6.1.1/390-dark-delete-htmx.png)](../evidence/style-parity/6.1.1/390-dark-delete-htmx.png) |

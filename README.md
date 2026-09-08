@@ -1,14 +1,25 @@
 # Django admin + HTMX 4
 
+[![CI](https://github.com/hitenjadeja/django-admin-htmx/actions/workflows/ci.yml/badge.svg)](https://github.com/hitenjadeja/django-admin-htmx/actions/workflows/ci.yml)
+[![License: BSD-3-Clause](https://img.shields.io/badge/license-BSD--3--Clause-blue)](https://github.com/hitenjadeja/django-admin-htmx/blob/main/LICENSE)
+
 An installable Django app that adds **HTMX 4.0.0** navigation to Django's own admin while retaining its default appearance. Existing ModelAdmin classes, forms, permissions, CSRF protection, messages, actions and audit logs remain authoritative. No admin model registry replacement, application database tables, CDN, or JavaScript build step is required.
 
 ## Install and integrate
 
-Install the built wheel (this project has not been published remotely):
+The project is in beta. Install the pinned GitHub version in your project's
+virtual environment (PyPI publication is planned separately):
 
 ```sh
-python -m pip install dist/django_admin_htmx-0.1.1-py3-none-any.whl
+python -m pip install "django-admin-htmx @ git+https://github.com/hitenjadeja/django-admin-htmx.git@v0.1.2"
 ```
+
+Or download the wheel from the [0.1.2 GitHub release](https://github.com/hitenjadeja/django-admin-htmx/releases/tag/v0.1.2)
+and install it with `python -m pip install /path/to/django_admin_htmx-0.1.2-py3-none-any.whl`.
+For uv, use `uv add "django-admin-htmx @ git+https://github.com/hitenjadeja/django-admin-htmx.git@v0.1.2"`.
+Pin the version in your dependency file or lockfile. See the
+[existing-project testing guide](https://github.com/hitenjadeja/django-admin-htmx/blob/main/docs/INTEGRATION.md)
+for checks, upgrades and rollback.
 
 Add the app **before** Django admin, and append the middleware to your existing middleware list:
 
@@ -44,7 +55,7 @@ The package ships no CSS and does not change Django's colours, fonts, spacing, w
 
 There are no added mobile menu/filter buttons, sticky save bar, progress bar or floating toast. Requests announce their status to assistive technology and temporarily disable the form's existing submit controls. Request failures appear with Django's existing `errornote` styling; normal validation and success messages remain Django's own.
 
-Desktop/mobile screenshots in both light and dark modes are compared with Django's original `admin/base.html`, with the library disabled. Those checks also verify that the enhanced document stays loaded and navigation uses actual HTMX requests. See [the visual comparison evidence](docs/STYLE_PARITY.md).
+Desktop/mobile screenshots in both light and dark modes are compared with Django's original `admin/base.html`, with the library disabled. Those checks also verify that the enhanced document stays loaded and navigation uses actual HTMX requests. See [the visual comparison evidence](https://github.com/hitenjadeja/django-admin-htmx/blob/main/docs/STYLE_PARITY.md).
 
 ## What is enhanced
 
@@ -62,9 +73,9 @@ HTMX 4.0.0 is a **stable release**, explicitly pinned and vendored with its lice
 
 ## Compatibility and extension points
 
-Dependency range: **Django >=5.2,<6.2**, **Python >=3.12**. Tested release/runtime details, exact test results and install evidence are in [VERIFICATION.md](docs/VERIFICATION.md). The maintained browser suite runs in Chromium; other engines and locales are not claimed as verified.
+Dependency range: **Django >=5.2,<6.2**, **Python >=3.12**. Tested release/runtime details, exact test results and install evidence are in [VERIFICATION.md](https://github.com/hitenjadeja/django-admin-htmx/blob/main/docs/VERIFICATION.md). The maintained browser suite runs in Chromium; other engines and locales are not claimed as verified.
 
-Custom ModelAdmin and AdminSite subclasses work normally. A custom template using stock media can use HTMX automatically. Pages with unknown scripts default to native navigation so their existing lifecycle still works. Developers can opt compatible scripts in using `data-admin-htmx-load="once"` or `"page"`, then initialize/destroy custom controls on `admin-htmx:load` and `admin-htmx:before-swap`. See [the architecture and extension contract](docs/ARCHITECTURE.md).
+Custom ModelAdmin and AdminSite subclasses work normally. A custom template using stock media can use HTMX automatically. Pages with unknown scripts default to native navigation so their existing lifecycle still works. Developers can opt compatible scripts in using `data-admin-htmx-load="once"` or `"page"`, then initialize/destroy custom controls on `admin-htmx:load` and `admin-htmx:before-swap`. See [the architecture and extension contract](https://github.com/hitenjadeja/django-admin-htmx/blob/main/docs/ARCHITECTURE.md).
 
 Use `data-admin-htmx="off"` on a control/wrapper, `hx-boost="false"`, or `ADMIN_HTMX_ENABLED = False` to opt out. Basic native HTML login and CRUD remain usable without JavaScript. JavaScript-specific widgets retain Django's usual no-JavaScript limitations. File inputs must be reselected after server validation, as with native Django.
 
@@ -77,7 +88,7 @@ The repository includes a catalog admin with book/author/tag/edition models, bot
 ```sh
 # From this project, use a working Python 3.12+ interpreter:
 python -m venv .venvs/dev
-.venvs/dev/bin/python -m pip install -e '.[test]'
+.venvs/dev/bin/python -m pip install -e '.[test,dev]'
 .venvs/dev/bin/python example/manage.py migrate
 .venvs/dev/bin/python example/manage.py seed_demo
 .venvs/dev/bin/python example/manage.py runserver 127.0.0.1:8791
@@ -101,14 +112,36 @@ UV_CACHE_DIR="$PWD/.cache/uv" TMPDIR="$PWD/.cache/tmp" uv build --out-dir dist
 
 Prepared version environments in this workspace are `.venvs/django52`, `.venvs/django60` and `.venvs/django61`; `scripts/test_matrix.py` runs the complete suite against each. To recreate them, create a virtual environment for each series and install `-e '.[test]'` with `Django==5.2.*`, `Django==6.0.*`, or `Django==6.1.*`, respectively. The additional `.venvs/python312-django61` verifies Python 3.12.
 
-Version 0.1.1 removes the custom theme from the initial 0.1.0 build. Upgrade to the new wheel and reload any already-open admin pages.
+Version 0.1.1 removed the custom theme from the initial 0.1.0 build. Version 0.1.2 adds open source distribution and release tooling. See the [changelog](https://github.com/hitenjadeja/django-admin-htmx/blob/main/CHANGELOG.md). Reload any already-open admin pages after an upgrade.
 
 Set `ADMIN_HTMX_SCREENSHOTS=1` during browser tests to regenerate the screenshot walkthrough. All project environments, caches, tests, example/fresh projects, artifacts and evidence are local to this folder. No remote service or publication is needed.
 
-- [Capability and test matrix](docs/COVERAGE.md)
-- [Measured verification and limitations](docs/VERIFICATION.md)
-- [Ordered screenshot walkthrough](docs/WALKTHROUGH.md)
-- [Task plan](docs/PLAN.md)
+- [Capability and test matrix](https://github.com/hitenjadeja/django-admin-htmx/blob/main/docs/COVERAGE.md)
+- [Measured verification and limitations](https://github.com/hitenjadeja/django-admin-htmx/blob/main/docs/VERIFICATION.md)
+- [Ordered screenshot walkthrough](https://github.com/hitenjadeja/django-admin-htmx/blob/main/docs/WALKTHROUGH.md)
+- [Task plan](https://github.com/hitenjadeja/django-admin-htmx/blob/main/docs/PLAN.md)
+
+## Contributing and releases
+
+See [CONTRIBUTING.md](https://github.com/hitenjadeja/django-admin-htmx/blob/main/CONTRIBUTING.md),
+[SECURITY.md](https://github.com/hitenjadeja/django-admin-htmx/blob/main/SECURITY.md),
+and [AGENTS.md](https://github.com/hitenjadeja/django-admin-htmx/blob/main/AGENTS.md).
+Claude follows the same instructions through `CLAUDE.md`.
+
+The version is declared in `src/admin_htmx/__init__.py`; tags use `vX.Y.Z`.
+During 0.x, minor versions may introduce breaking changes, while patch releases
+preserve the integration contract. Release notes are maintained in the changelog.
+
+GitHub Actions runs backend tests across Python 3.12–3.14 and Django 5.2, 6.0 and
+6.1, plus Chromium tests and fresh-wheel integration on each Django series.
+Workflows use standard Ubuntu runners, pinned action commits and seven-day
+distribution artifact retention. Standard hosted-runner minutes are free for
+public repositories; storage has separate allowances.
+
+[The release guide](https://github.com/hitenjadeja/django-admin-htmx/blob/main/docs/RELEASING.md)
+documents GitHub releases, the separate manual TestPyPI/PyPI workflow and the
+later Django Packages listing. A normal push or GitHub release does not publish
+anything to PyPI.
 
 ## Upstream references
 

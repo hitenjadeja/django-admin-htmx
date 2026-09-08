@@ -1,0 +1,24 @@
+name: Bug report
+description: Report a reproducible admin integration problem.
+body:
+  - type: textarea
+    id: versions
+    attributes:
+      label: Environment
+      description: Python, Django, django-admin-htmx, browser and OS versions; relevant admin customizations.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include a minimal example and whether ADMIN_HTMX_ENABLED=False changes the result. Remove credentials and private data.
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Expected and actual behavior
+      description: Include relevant errors and screenshots if useful.
+    validations:
+      required: true

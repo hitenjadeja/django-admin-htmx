@@ -1,4 +1,4 @@
-include LICENSE README.md pyproject.toml
+include LICENSE README.md CHANGELOG.md CONTRIBUTING.md SECURITY.md AGENTS.md CLAUDE.md pyproject.toml
 recursive-include src/admin_htmx *.py py.typed *.html *.js *LICENSE
 recursive-include tests *.py
 recursive-include example *.py *.html *.js

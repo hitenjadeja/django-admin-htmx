@@ -12,7 +12,7 @@ import re
 from pathlib import Path
 import subprocess
 import sys
-import tomllib
+from check_release import read_version
 
 ROOT = Path(__file__).resolve().parents[1]
 ENV = {**os.environ, "UV_CACHE_DIR": str(ROOT / ".cache/uv"), "TMPDIR": str(ROOT / ".cache/tmp"), "PLAYWRIGHT_BROWSERS_PATH": str(ROOT / ".cache/ms-playwright"), "SOURCE_DATE_EPOCH": "1788825600"}
@@ -178,12 +178,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--series', nargs='+', default=['5.2', '6.0', '6.1'])
     parser.add_argument('--skip-build', action='store_true')
+    parser.add_argument('--dist-dir', type=Path, default=ROOT / 'dist')
     args = parser.parse_args()
     if not args.skip_build:
-        run('uv', 'build', '--out-dir', ROOT / 'dist', '--python', sys.executable)
-    version = tomllib.loads((ROOT / 'pyproject.toml').read_text())['project']['version']
-    wheel = next((ROOT / 'dist').glob(f'django_admin_htmx-{version}-*.whl'))
+        run('uv', 'build', '--out-dir', args.dist_dir, '--python', sys.executable)
+    version = read_version()
+    wheel = next(args.dist_dir.resolve().glob(f'django_admin_htmx-{version}-*.whl'))
     results = [verify(series, wheel) for series in args.series]
+    (ROOT / 'evidence').mkdir(exist_ok=True)
     (ROOT / 'evidence/fresh-install.json').write_text(json.dumps(results, indent=2) + '\n')
     print(json.dumps(results, indent=2))
 

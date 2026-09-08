@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import zipfile
 import tarfile
-import tomllib
+from check_release import read_version
 from xml.etree import ElementTree
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -65,7 +65,7 @@ def main():
     fresh = json.loads((ROOT / 'evidence/fresh-install.json').read_text())
     assert len(matrix) == 4 and all(row['exit_code'] == 0 for row in matrix), matrix
     assert len(fresh) == 3
-    package_version = tomllib.loads((ROOT / 'pyproject.toml').read_text())['project']['version']
+    package_version = read_version()
     results = [ElementTree.parse(ROOT / f'evidence/{row["environment"]}.xml').findall('.//testcase') for row in matrix]
     total = sum(len(cases) for cases in results)
     backend_count = sum(case.get('classname', '').endswith('test_admin') for case in results[0])
@@ -104,7 +104,8 @@ def main():
     md = ['# Ordered screenshot walkthrough', '', 'Actual screenshots from the implemented UI and independent installed-wheel projects. Each image links to its full-size original. The gallery has desktop/mobile views, validation and permission boundaries, confirmation/cancellation branches and saved states.', '', '[Open the compact gallery](../evidence/walkthrough.html)', '']
     figures = []
     for index, step in enumerate(steps, 1):
-        md.extend([f'## {index}. {step["title"]}', '', f'[![{step["title"]}]({step["path"]})]({step["path"]})', ''])
+        doc_path = '../' + str(Path(step['path']).relative_to(ROOT))
+        md.extend([f'## {index}. {step["title"]}', '', f'[![{step["title"]}]({doc_path})]({doc_path})', ''])
         figures.append(f'<figure><figcaption><span>{index:02d}</span> {html.escape(step["title"])}</figcaption><a href="{step["relative"]}" target="_blank"><img loading="lazy" src="{step["relative"]}" alt="{html.escape(step["title"])}"></a><a class="original" href="{step["relative"]}" target="_blank">Open full-size image ↗</a></figure>')
     (ROOT / 'docs/WALKTHROUGH.md').write_text('\n'.join(md))
     gallery = '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Django HTMX admin · Screenshot walkthrough</title><style>body{margin:0;background:#f2f5f3;color:#173a37;font:16px system-ui}header{padding:40px;max-width:1100px;margin:auto}h1{font-size:34px;margin:0 0 12px}main{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:24px;padding:0 32px 40px;max-width:1450px;margin:auto}figure{margin:0;border:1px solid #cedbd3;border-radius:10px;overflow:hidden;background:white}figcaption{padding:18px;font-weight:650;min-height:48px}figcaption span{color:#659280;margin-right:10px}img{width:100%;height:420px;object-fit:contain;object-position:top;background:#fff;display:block}.original{display:block;padding:16px;color:#246454;border-top:1px solid #eee}a:focus-visible{outline:3px solid #c58a24}header p{max-width:800px;line-height:1.6}@media(max-width:500px){header{padding:24px}main{padding:0 16px 24px;grid-template-columns:1fr}}</style><header><h1>Django admin + HTMX 4</h1><p>Ordered screenshots of the actual implementation. Follow the flow from entry to saved states, including validation, permissions, cancellations, related popups, mobile layouts and fresh wheel installations. Select an image for its full-size original.</p></header><main>' + ''.join(figures) + '</main></html>'
@@ -139,7 +140,7 @@ SHA-256: `{wheel['sha256']}`
 
 [Artifact sizes and checksums](../evidence/artifacts.json), [fresh-install machine-readable report](../evidence/fresh-install.json), [test matrix JSON](../evidence/test-matrix.json), [HTMX version/provenance](../evidence/htmx-version.json).
 
-Wheel inspection confirmed the Python app, template override, template tag, JavaScript, pinned HTMX source and both licenses are present; example code, test files and databases are absent from the wheel. The wheel contains no CSS files. The source distribution includes the example, tests/conftest and reproducible verification scripts. Build artifacts are under dist/ and are not remotely published.
+Wheel inspection confirmed the Python app, template override, template tag, JavaScript, pinned HTMX source and both licenses are present; example code, test files and databases are absent from the wheel. The wheel contains no CSS files. The source distribution includes the example, tests/conftest and reproducible verification scripts. Build artifacts are under dist/. Publication is managed separately; see [the release guide](RELEASING.md).
 
 ## Default Django appearance restored in 0.1.1
 
@@ -155,7 +156,7 @@ Earlier lifecycle, nonce and Django 5.2 password-widget fixes remain covered by 
 
 See [COVERAGE.md](COVERAGE.md) for the feature-to-test mapping and precise boundaries. Related-object popups intentionally use Django's native protocol; autocomplete retains Select2 AJAX. Unknown custom media default to native pages unless explicitly opted in. Basic no-JavaScript CRUD is verified; JS-specific widgets still require JS. Files must be reselected after validation. Custom non-200 validation responses, non-attachment non-HTML actions, arbitrary third-party themes/editors, non-Chromium browsers, screen readers, other locales/RTL and database-specific behavior are not claimed as exhaustively verified.
 
-These limits are documented integration boundaries; the implemented and tested core admin flows are complete. No remote push, package publication or deployment was requested or performed.
+These limits are documented integration boundaries; the implemented and tested core admin flows are complete. Publication status is recorded in GitHub Releases and the package index, separately from this local verification report.
 '''
     (ROOT / 'docs/VERIFICATION.md').write_text(report)
     parity_rows = []
@@ -174,8 +175,9 @@ These limits are documented integration boundaries; the implemented and tested c
         for theme in ['light', 'dark']:
             for name in ['login', 'dashboard', 'changelist', 'change-form', 'delete']:
                 stem = f'{width}-{theme}-{name}'
-                images = [ROOT / 'evidence/style-parity' / latest / f'{stem}-{kind}.png' for kind in ['native', 'htmx']]
-                assert all(path.exists() for path in images)
+                image_files = [ROOT / 'evidence/style-parity' / latest / f'{stem}-{kind}.png' for kind in ['native', 'htmx']]
+                assert all(path.exists() for path in image_files)
+                images = ['../' + str(path.relative_to(ROOT)) for path in image_files]
                 parity_doc.extend([f'## {name} · {width}px · {theme}', '', '| Default Django | With HTMX |', '|---|---|', f'| [![Default Django]({images[0]})]({images[0]}) | [![With HTMX]({images[1]})]({images[1]}) |', ''])
     (ROOT / 'docs/STYLE_PARITY.md').write_text('\n'.join(parity_doc))
     print(f'Validated artifacts; generated {len(steps)} ordered screenshots and verification report.')

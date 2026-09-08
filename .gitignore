@@ -14,3 +14,10 @@ fresh_install/**/staticfiles/
 evidence/*.log
 evidence/browser-results/
 .DS_Store
+.venv/
+.env
+.env.*
+!.env.example
+.coverage
+htmlcov/
+.ruff_cache/
