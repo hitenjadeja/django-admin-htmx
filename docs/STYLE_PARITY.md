@@ -1,5 +1,10 @@
 # Default Django appearance
 
+The evidence below records the 0.1.1 local run. The current CI test also waits for
+finite CSS transitions to finish before comparing styles. It allows at most
+100 changed pixels with a channel delta of 16/255 to accommodate Linux native
+control-edge antialiasing; computed styles and geometry must still match exactly.
+
 Version 0.1.1 adds HTMX behavior without a theme stylesheet or extra navigation controls. The reference is Django's original admin/base.html, with this library disabled and absent from the reference page.
 
 Each comparison checks stylesheet order, exact computed styles and element geometry, and screenshots. Focus/hover are neutralized for visual comparison. Up to 100 antialiased native-control corner pixels may differ by at most 8 out of 255 per colour channel; dimensions and computed styles of the visible controls must still match exactly. Actual HTMX request headers and a persistent window marker prove that the enhanced document is not reloaded.

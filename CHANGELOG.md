@@ -26,6 +26,8 @@ from a GitHub release.
   URLs, explicit license files and supported-version classifiers.
 - The package version is declared only in `src/admin_htmx/__init__.py`.
 - Screenshot documentation uses portable links for GitHub readers.
+- Appearance comparisons wait for native transitions to finish and account for
+  Linux control-edge antialiasing while retaining exact style/layout checks.
 
 ## [0.1.1] - 2026-09-08
 
