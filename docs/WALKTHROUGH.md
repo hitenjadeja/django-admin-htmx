@@ -156,21 +156,21 @@ Actual screenshots from the implemented UI and independent installed-wheel proje
 
 [![Mobile dashboard](/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/22-mobile-dashboard.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/22-mobile-dashboard.png)
 
-## 39. Mobile list with contained table scrolling
+## 39. Default Django mobile changelist
 
-[![Mobile list with contained table scrolling](/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/23-mobile-list.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/23-mobile-list.png)
+[![Default Django mobile changelist](/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/23-mobile-list.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/23-mobile-list.png)
 
-## 40. Mobile navigation opened; keyboard focus visible
+## 40. Mobile navigation using Django breadcrumbs
 
-[![Mobile navigation opened; keyboard focus visible](/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/24-mobile-navigation.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/24-mobile-navigation.png)
+[![Mobile navigation using Django breadcrumbs](/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/24-mobile-navigation.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/24-mobile-navigation.png)
 
-## 41. Mobile filters opened
+## 41. Default Django mobile filters
 
-[![Mobile filters opened](/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/26-mobile-filters.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/26-mobile-filters.png)
+[![Default Django mobile filters](/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/26-mobile-filters.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/26-mobile-filters.png)
 
-## 42. Mobile add form: usable widths and save actions
+## 42. Default Django mobile add form and save actions
 
-[![Mobile add form: usable widths and save actions](/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/27-mobile-add-form.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/27-mobile-add-form.png)
+[![Default Django mobile add form and save actions](/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/27-mobile-add-form.png)](/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/27-mobile-add-form.png)
 
 ## 43. Mobile save completed
 

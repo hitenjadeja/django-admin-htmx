@@ -1,17 +1,17 @@
 # Verification report
 
-Completed 2026-09-07. Package version 0.1.0, stable vendored HTMX 4.0.0. The source suite contains **49 backend/integration tests and 15 real-browser scenarios**, with multiple workflow assertions per browser scenario. No browser tests are mocked or skipped in the final matrix.
+Updated 2026-09-08. Package version 0.1.1, stable vendored HTMX 4.0.0. The source suite contains **49 backend/integration tests and 19 real-browser scenarios**, with multiple workflow assertions per browser scenario. No browser tests are mocked or skipped in the final matrix.
 
 ## Final test matrix
 
 | Django | Python | Result | Evidence |
 |---|---|---|---|
-| 5.2.17 | 3.13.0 | 64 passed in 28.05s | [JUnit](../evidence/django52.xml) · [log](../evidence/django52-tests.txt) |
-| 6.0.8 | 3.13.0 | 64 passed in 32.35s | [JUnit](../evidence/django60.xml) · [log](../evidence/django60-tests.txt) |
-| 6.1.1 | 3.13.0 | 64 passed in 36.42s | [JUnit](../evidence/django61.xml) · [log](../evidence/django61-tests.txt) |
-| 6.1.1 | 3.12.7 | 64 passed in 35.31s | [JUnit](../evidence/python312-django61.xml) · [log](../evidence/python312-django61-tests.txt) |
+| 5.2.17 | 3.13.0 | 68 passed in 55.31s | [JUnit](../evidence/django52.xml) · [log](../evidence/django52-tests.txt) |
+| 6.0.8 | 3.13.0 | 68 passed in 60.44s (0:01:00) | [JUnit](../evidence/django60.xml) · [log](../evidence/django60-tests.txt) |
+| 6.1.1 | 3.13.0 | 68 passed in 64.93s (0:01:04) | [JUnit](../evidence/django61.xml) · [log](../evidence/django61-tests.txt) |
+| 6.1.1 | 3.12.7 | 68 passed in 62.68s (0:01:02) | [JUnit](../evidence/python312-django61.xml) · [log](../evidence/python312-django61-tests.txt) |
 
-**256 passing source-suite executions** across four environments. Browser engine: Chromium 151.0.7922.34 (Playwright 1.62.0), macOS arm64. Tests use SQLite, an actual Django live server, real form submissions and local static assets. Browser errors are asserted absent.
+**272 passing source-suite executions** across four environments. Browser engine: Chromium 151.0.7922.34 (Playwright 1.62.0), macOS arm64. Tests use SQLite, an actual Django live server, real form submissions and local static assets. Browser errors are asserted absent.
 
 ## Independent wheel installations
 
@@ -25,24 +25,23 @@ Each generated project has its own non-editable environment, Django installation
 
 **3 additional fresh-project tests passed.** Each project also passed migrations, Django system checks and collectstatic. Desktop/mobile saved-state screenshots from each installation are in the [walkthrough](WALKTHROUGH.md). The reports record the exact wheel SHA-256 and installed import path.
 
-Verified wheel: `dist/django_admin_htmx-0.1.0-py3-none-any.whl`  
-SHA-256: `e20e16aa0c28c2f6b4aa33eaf5d680cf48694928ca94ae7fe2bc69259cdd5559`
+Verified wheel: `dist/django_admin_htmx-0.1.1-py3-none-any.whl`
+
+SHA-256: `9f34016b5e2447edcb6f610d2c2381dc55a2d5956c435ed2f226a99aa3369e6c`
 
 [Artifact sizes and checksums](../evidence/artifacts.json), [fresh-install machine-readable report](../evidence/fresh-install.json), [test matrix JSON](../evidence/test-matrix.json), [HTMX version/provenance](../evidence/htmx-version.json).
 
-Wheel inspection confirmed the Python app, template override, template tag, CSS, JavaScript, pinned HTMX source and both licenses are present; example code, test files and databases are absent from the wheel. The source distribution includes the example, tests/conftest and reproducible verification scripts. Build artifacts are under dist/ and are not remotely published.
+Wheel inspection confirmed the Python app, template override, template tag, JavaScript, pinned HTMX source and both licenses are present; example code, test files and databases are absent from the wheel. The wheel contains no CSS files. The source distribution includes the example, tests/conftest and reproducible verification scripts. Build artifacts are under dist/ and are not remotely published.
 
-## UI/UX findings and corrections
+## Default Django appearance restored in 0.1.1
 
-- Select2 loaded after a previous page's jquery.init had lost its temporary global. The loader now briefly bridges Django's jQuery only while Select2 media load, and restores it afterward.
-- Stock widget scripts assume fresh documents. Per-page initialization/cleanup now covers inlines, calendars, selectors, actions, filters, themes, cancellation and prepopulation. Repeated-navigation tests check widget counts and global-listener counts.
-- Django 6.1's nested changelist retained a desktop filter width on mobile. The mobile layout now expands the table/search area, keeps filters collapsible and confines scrolling to the table.
-- The sidebar retained a desktop offset on mobile. Its mobile position and usable width are now asserted.
-- Django's viewport-based text-field width clipped controls inside padded form rows. Form controls now fit their containers; the browser checks the actual field width.
-- A nonce-only script policy needed the active document nonce retained across later script loads. This is implemented and tested without unsafe-eval.
-- Django 5.2 includes a legacy unusable-password script removed in 6.x. It has an explicit version-aware lifecycle entry, tested via user creation and password reset.
-- Response middleware order is reversed by Django. GZip integration is verified, and a system check warns when compression/ETag/cache middleware would run before the adapter can transform HTML.
-- Loading/live-region, focused errors, retained drafts after failures, successful retry, duplicate-submit prevention, keyboard menu closing, browser history, permission boundaries and native fallback have browser evidence.
+The custom theme, mobile navigation/filter buttons, sticky save bar, progress bar and floating toast have been removed. Django's own stylesheet set, cascade order, colours, fonts, layout and responsive breakpoints are preserved. The loader also removes obsolete stylesheets when navigating away from a page and waits for new styles before initializing widgets.
+
+Pending submissions use the existing controls' disabled state and a visually hidden live region. Request errors use Django's standard errornote class. HTMX 4 navigation, forms, widget lifecycle, focus management, CSRF, permissions, history and native fallbacks remain active.
+
+Four visual scenarios cover desktop/mobile and light/dark themes, each comparing nine pages with Django's unmodified admin/base.html. The baseline has no library scripts or stylesheet. Tests require identical stylesheet order, computed styles and element geometry, and matching screenshots (up to 100 native-control corner pixels may differ by at most 8/255 per channel due to browser antialiasing). They also assert that navigation uses HTMX requests and the original enhanced document stays loaded. See [paired native/enhanced evidence](STYLE_PARITY.md).
+
+Earlier lifecycle, nonce and Django 5.2 password-widget fixes remain covered by the full regression suite. The initial custom responsive styling described in the 0.1.0 task history is superseded by this default-appearance contract.
 
 ## Scope and limits
 

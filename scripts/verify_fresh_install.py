@@ -12,9 +12,10 @@ import re
 from pathlib import Path
 import subprocess
 import sys
+import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
-ENV = {**os.environ, "UV_CACHE_DIR": str(ROOT / ".cache/uv"), "TMPDIR": str(ROOT / ".cache/tmp"), "PLAYWRIGHT_BROWSERS_PATH": str(ROOT / ".cache/ms-playwright"), "SOURCE_DATE_EPOCH": "1788739200"}
+ENV = {**os.environ, "UV_CACHE_DIR": str(ROOT / ".cache/uv"), "TMPDIR": str(ROOT / ".cache/tmp"), "PLAYWRIGHT_BROWSERS_PATH": str(ROOT / ".cache/ms-playwright"), "SOURCE_DATE_EPOCH": "1788825600"}
 ENV.pop("PYTHONPATH", None)
 ENV.pop("DJANGO_SETTINGS_MODULE", None)
 (ROOT / ".cache/tmp").mkdir(parents=True, exist_ok=True)
@@ -123,7 +124,8 @@ class WheelInstallationTests(StaticLiveServerTestCase):
             shot = Path.cwd() / 'wheel-saved-desktop.png'
             page.screenshot(path=str(shot), full_page=True)
             page.set_viewport_size({'width':390, 'height':844})
-            assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+            expect(page.locator('link[href*="admin_htmx"]')).to_have_count(0)
+            expect(page.locator('#admin-htmx-nav, #admin-htmx-filters')).to_have_count(0)
             page.screenshot(path=str(Path.cwd() / 'wheel-saved-mobile.png'), full_page=True)
             browser.close()
         os.environ.pop('DJANGO_ALLOW_ASYNC_UNSAFE', None)
@@ -179,7 +181,8 @@ def main():
     args = parser.parse_args()
     if not args.skip_build:
         run('uv', 'build', '--out-dir', ROOT / 'dist', '--python', sys.executable)
-    wheel = next((ROOT / 'dist').glob('django_admin_htmx-0.1.0-*.whl'))
+    version = tomllib.loads((ROOT / 'pyproject.toml').read_text())['project']['version']
+    wheel = next((ROOT / 'dist').glob(f'django_admin_htmx-{version}-*.whl'))
     results = [verify(series, wheel) for series in args.series]
     (ROOT / 'evidence/fresh-install.json').write_text(json.dumps(results, indent=2) + '\n')
     print(json.dumps(results, indent=2))

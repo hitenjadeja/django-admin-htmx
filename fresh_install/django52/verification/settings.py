@@ -122,6 +122,7 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
+
 # BEGIN WHEEL VERIFICATION
 INSTALLED_APPS.insert(0, 'admin_htmx')
 INSTALLED_APPS.append('library')

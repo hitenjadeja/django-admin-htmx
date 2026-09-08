@@ -1,13 +1,13 @@
 # Django admin + HTMX 4
 
-An installable Django app that makes Django's own admin responsive and reactive with **HTMX 4.0.0**. Existing ModelAdmin classes, forms, permissions, CSRF protection, messages, actions and audit logs remain authoritative. No admin model registry replacement, application database tables, CDN, or JavaScript build step is required.
+An installable Django app that adds **HTMX 4.0.0** navigation to Django's own admin while retaining its default appearance. Existing ModelAdmin classes, forms, permissions, CSRF protection, messages, actions and audit logs remain authoritative. No admin model registry replacement, application database tables, CDN, or JavaScript build step is required.
 
 ## Install and integrate
 
 Install the built wheel (this project has not been published remotely):
 
 ```sh
-python -m pip install dist/django_admin_htmx-0.1.0-py3-none-any.whl
+python -m pip install dist/django_admin_htmx-0.1.1-py3-none-any.whl
 ```
 
 Add the app **before** Django admin, and append the middleware to your existing middleware list:
@@ -36,7 +36,15 @@ urlpatterns = [path("admin/", admin.site.urls)]
 
 Run `python manage.py check` and `python manage.py collectstatic --noinput`. Serve `STATIC_ROOT` using your usual production static-file server. The middleware must appear **after** GZipMiddleware, ConditionalGetMiddleware and UpdateCacheMiddleware when used: response middleware runs in reverse order, so HTML must be enhanced before compression, ETags or caching. System checks flag incorrect app/middleware ordering.
 
-Do not load another HTMX core on enhanced admin pages. Keep `{{ block.super }}` when overriding `extrahead` or `responsive` in admin templates. The package has no migrations and does not change your models.
+Do not load another HTMX core on enhanced admin pages. Keep `{{ block.super }}` when overriding `extrahead` in admin templates. The package has no migrations and does not change your models.
+
+## Default Django appearance
+
+The package ships no CSS and does not change Django's colours, fonts, spacing, widgets, navigation or responsive breakpoints. It loads exactly the stylesheets rendered by Django for each page, in the same order, and removes styles from the previous page after navigation. Existing project branding and template/style customizations remain your own.
+
+There are no added mobile menu/filter buttons, sticky save bar, progress bar or floating toast. Requests announce their status to assistive technology and temporarily disable the form's existing submit controls. Request failures appear with Django's existing `errornote` styling; normal validation and success messages remain Django's own.
+
+Desktop/mobile screenshots in both light and dark modes are compared with Django's original `admin/base.html`, with the library disabled. Those checks also verify that the enhanced document stays loaded and navigation uses actual HTMX requests. See [the visual comparison evidence](docs/STYLE_PARITY.md).
 
 ## What is enhanced
 
@@ -45,8 +53,8 @@ Do not load another HTMX core on enhanced admin pages. Keep `{{ block.super }}` 
 - Add/change/delete/history, validation errors, preserved filters and every standard save variant.
 - Bulk selection, select across pages, actions, intermediate confirmations and file downloads.
 - Tabular/stacked inlines, date/time widgets, prepopulated fields, uploads, related widgets and filtered multi-selects.
-- Visible loading and error feedback, duplicate-submit prevention, focus recovery and browser back/forward.
-- Mobile navigation/filter controls, usable form widths and contained horizontal table scrolling.
+- Accessible request status, native disabled submit controls, Django-styled error feedback, duplicate-submit prevention, focus recovery and browser back/forward.
+- Django's own desktop/mobile layout, theme toggle, navigation and filter controls.
 
 Django's related-object popups retain their native opener/dismiss protocol. Autocomplete retains Django's Select2 AJAX endpoint. These controls are initialized correctly after HTMX navigation rather than being replaced with new protocols.
 
@@ -92,6 +100,8 @@ UV_CACHE_DIR="$PWD/.cache/uv" TMPDIR="$PWD/.cache/tmp" uv build --out-dir dist
 `verify_fresh_install.py` builds the package, creates three independent Django projects and environments under `fresh_install/` and `.venvs/`, installs the **wheel** (not an editable checkout), runs migrations/checks/collectstatic, checks the package import path and exercises login, prepopulation, autocomplete, inlines and a save in real Chromium. It records JSON, test logs and desktop/mobile screenshots. `--skip-build` reuses the existing wheel.
 
 Prepared version environments in this workspace are `.venvs/django52`, `.venvs/django60` and `.venvs/django61`; `scripts/test_matrix.py` runs the complete suite against each. To recreate them, create a virtual environment for each series and install `-e '.[test]'` with `Django==5.2.*`, `Django==6.0.*`, or `Django==6.1.*`, respectively. The additional `.venvs/python312-django61` verifies Python 3.12.
+
+Version 0.1.1 removes the custom theme from the initial 0.1.0 build. Upgrade to the new wheel and reload any already-open admin pages.
 
 Set `ADMIN_HTMX_SCREENSHOTS=1` during browser tests to regenerate the screenshot walkthrough. All project environments, caches, tests, example/fresh projects, artifacts and evidence are local to this folder. No remote service or publication is needed.
 

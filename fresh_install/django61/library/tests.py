@@ -56,7 +56,8 @@ class WheelInstallationTests(StaticLiveServerTestCase):
             shot = Path.cwd() / 'wheel-saved-desktop.png'
             page.screenshot(path=str(shot), full_page=True)
             page.set_viewport_size({'width':390, 'height':844})
-            assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+            expect(page.locator('link[href*="admin_htmx"]')).to_have_count(0)
+            expect(page.locator('#admin-htmx-nav, #admin-htmx-filters')).to_have_count(0)
             page.screenshot(path=str(Path.cwd() / 'wheel-saved-mobile.png'), full_page=True)
             browser.close()
         os.environ.pop('DJANGO_ALLOW_ASYNC_UNSAFE', None)

@@ -28,7 +28,7 @@ Running migrations:
   Applying sessions.0001_initial...test_installed_wheel_backend_and_browser (library.tests.WheelInstallationTests.test_installed_wheel_backend_and_browser) ... ok
 
 ----------------------------------------------------------------------
-Ran 1 test in 1.746s
+Ran 1 test in 2.099s
 
 OK
 Destroying test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...

@@ -190,22 +190,22 @@
     "relative": "screenshots/22-mobile-dashboard.png"
   },
   {
-    "title": "Mobile list with contained table scrolling",
+    "title": "Default Django mobile changelist",
     "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/23-mobile-list.png",
     "relative": "screenshots/23-mobile-list.png"
   },
   {
-    "title": "Mobile navigation opened; keyboard focus visible",
+    "title": "Mobile navigation using Django breadcrumbs",
     "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/24-mobile-navigation.png",
     "relative": "screenshots/24-mobile-navigation.png"
   },
   {
-    "title": "Mobile filters opened",
+    "title": "Default Django mobile filters",
     "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/26-mobile-filters.png",
     "relative": "screenshots/26-mobile-filters.png"
   },
   {
-    "title": "Mobile add form: usable widths and save actions",
+    "title": "Default Django mobile add form and save actions",
     "path": "/Users/hiten/workspace/djang-admin-htmx/evidence/screenshots/27-mobile-add-form.png",
     "relative": "screenshots/27-mobile-add-form.png"
   },

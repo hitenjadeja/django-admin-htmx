@@ -1,0 +1,7 @@
+{
+  "comparisons": 108,
+  "all_match": true,
+  "computed_styles_and_geometry": "exact",
+  "maximum_pixel_channel_difference": 8,
+  "maximum_changed_pixels_per_image": 100
+}

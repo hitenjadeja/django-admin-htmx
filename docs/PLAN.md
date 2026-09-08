@@ -11,7 +11,7 @@ The plan tool is unavailable in this task's callable tool inventory. This durabl
 
 ## Constraints
 
-All task files, environments, downloads and evidence remain within this project. Preserve unrelated parent-workspace changes. No publication or Git changes required. Django's authorization, CSRF, validation, ModelAdmin and AdminSite behavior remain authoritative. No sensitive admin HTML is stored in HTMX's localStorage history cache. Opt out to native navigation for incompatible custom integrations.
+All task files, environments, downloads and evidence remain within this project. Preserve unrelated parent-workspace changes. No remote publication is requested. Local task commits are authorized. Django's authorization, CSRF, validation, ModelAdmin and AdminSite behavior remain authoritative. No sensitive admin HTML is stored in HTMX's localStorage history cache. Opt out to native navigation for incompatible custom integrations.
 
 ## Task commits
 
@@ -34,3 +34,11 @@ Final matrix: 64 passed on Django 5.2.17, 6.0.8 and 6.1.1 with Python 3.13.0, an
 - Final documentation/evidence task — installation guide, compatibility boundaries, 52-step screenshot gallery and artifact checksums; committed after final archive verification.
 
 All planned implementation tasks are complete. No remote push, publication or deployment was requested or performed.
+
+## 2026-09-08 — preserve Django's default appearance
+
+1. [complete] Remove custom CSS, controls and visual chrome; retain HTMX and Django's stock styles, including stylesheet order after navigation.
+2. [complete] Compare actual default/enhanced screenshots on desktop/mobile and in light/dark modes; rerun the functional matrix.
+3. [complete] Rebuild version 0.1.1, verify fresh-wheel installs, refresh documentation/screenshots and commit the completed correction.
+
+Revision checkpoint: `ab8b55f` removes the theme and extra controls, preserves native stylesheet order, and adds direct stock-Django appearance comparisons. The 0.1.1 wheel has passed all three fresh-project browser checks and contains no CSS. Final verification passed: 68 tests in each of four environments (272 passes), 108 default/enhanced page comparisons across three Django series, and three fresh-wheel browser checks. The 52-step walkthrough is regenerated with default Django styling.

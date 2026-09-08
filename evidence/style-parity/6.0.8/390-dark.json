@@ -1,0 +1,110 @@
+[
+  {
+    "page": "login",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "theme": "dark",
+    "matches_default": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "same_dimensions": true
+  },
+  {
+    "page": "dashboard",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "theme": "dark",
+    "matches_default": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "same_dimensions": true
+  },
+  {
+    "page": "app-index",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "theme": "dark",
+    "matches_default": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "same_dimensions": true
+  },
+  {
+    "page": "changelist",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "theme": "dark",
+    "matches_default": true,
+    "same_dimensions": true,
+    "changed_pixels": 15,
+    "max_channel_delta": 3
+  },
+  {
+    "page": "change-form",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "theme": "dark",
+    "matches_default": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "same_dimensions": true
+  },
+  {
+    "page": "history",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "theme": "dark",
+    "matches_default": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "same_dimensions": true
+  },
+  {
+    "page": "delete",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "theme": "dark",
+    "matches_default": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "same_dimensions": true
+  },
+  {
+    "page": "password",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "theme": "dark",
+    "matches_default": true,
+    "same_dimensions": true,
+    "changed_pixels": 1,
+    "max_channel_delta": 1
+  },
+  {
+    "page": "return-to-list",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "theme": "dark",
+    "matches_default": true,
+    "same_dimensions": true,
+    "changed_pixels": 15,
+    "max_channel_delta": 3
+  }
+]

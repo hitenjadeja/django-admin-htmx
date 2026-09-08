@@ -6,6 +6,8 @@ import json
 from pathlib import Path
 import zipfile
 import tarfile
+import tomllib
+from xml.etree import ElementTree
 
 ROOT = Path(__file__).resolve().parents[1]
 STEPS = [
@@ -47,10 +49,10 @@ STEPS = [
 ('43-no-javascript-saved','JavaScript disabled: native CRUD saved'),
 ('21-mobile-login','Mobile entry: log in'),
 ('22-mobile-dashboard','Mobile dashboard'),
-('23-mobile-list','Mobile list with contained table scrolling'),
-('24-mobile-navigation','Mobile navigation opened; keyboard focus visible'),
-('26-mobile-filters','Mobile filters opened'),
-('27-mobile-add-form','Mobile add form: usable widths and save actions'),
+('23-mobile-list','Default Django mobile changelist'),
+('24-mobile-navigation','Mobile navigation using Django breadcrumbs'),
+('26-mobile-filters','Default Django mobile filters'),
+('27-mobile-add-form','Default Django mobile add form and save actions'),
 ('28-mobile-saved','Mobile save completed'),
 ('29-mobile-password-error','Mobile password validation error'),
 ('30-mobile-password-done','Mobile password change completed'),
@@ -63,16 +65,22 @@ def main():
     fresh = json.loads((ROOT / 'evidence/fresh-install.json').read_text())
     assert len(matrix) == 4 and all(row['exit_code'] == 0 for row in matrix), matrix
     assert len(fresh) == 3
+    package_version = tomllib.loads((ROOT / 'pyproject.toml').read_text())['project']['version']
+    results = [ElementTree.parse(ROOT / f'evidence/{row["environment"]}.xml').findall('.//testcase') for row in matrix]
+    total = sum(len(cases) for cases in results)
+    backend_count = sum(case.get('classname', '').endswith('test_admin') for case in results[0])
+    browser_count = sum(case.get('classname', '').endswith('test_browser') for case in results[0])
     artifacts = []
-    for path in sorted((ROOT / 'dist').glob('*')):
+    for path in [ROOT / 'dist' / f'django_admin_htmx-{package_version}-py3-none-any.whl', ROOT / 'dist' / f'django_admin_htmx-{package_version}.tar.gz']:
         if path.suffix in ('.whl', '.gz'):
             artifacts.append({'path': str(path.relative_to(ROOT)), 'bytes': path.stat().st_size, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()})
     wheel = next(item for item in artifacts if item['path'].endswith('.whl'))
     assert all(row['sha256'] == wheel['sha256'] for row in fresh), 'Wheel changed since fresh-install verification'
     with zipfile.ZipFile(ROOT / wheel['path']) as archive:
         names = archive.namelist()
-        for required in ['admin_htmx/templates/admin/base.html', 'admin_htmx/static/admin_htmx/admin.js', 'admin_htmx/static/admin_htmx/admin.css', 'admin_htmx/static/admin_htmx/vendor/htmx-4.0.0.js', 'admin_htmx/static/admin_htmx/vendor/HTMX-LICENSE', 'admin_htmx/templatetags/admin_htmx.py']:
+        for required in ['admin_htmx/templates/admin/base.html', 'admin_htmx/static/admin_htmx/admin.js', 'admin_htmx/static/admin_htmx/vendor/htmx-4.0.0.js', 'admin_htmx/static/admin_htmx/vendor/HTMX-LICENSE', 'admin_htmx/templatetags/admin_htmx.py']:
             assert required in names, required
+        assert not any(name.endswith('.css') for name in names), 'The library must not ship a theme stylesheet'
         assert not any('example/' in name or 'tests/' in name or '.sqlite3' in name for name in names)
     source = next(item for item in artifacts if item['path'].endswith('.gz'))
     with tarfile.open(ROOT / source['path']) as archive:
@@ -105,7 +113,7 @@ def main():
     installs = '\n'.join(f'| {row["version"]} | Passed | `{Path(row["package_import"]).relative_to(ROOT)}` | [log](../fresh_install/django{row["series"].replace(".", "")}/verification-output.txt) |' for row in fresh)
     report = f'''# Verification report
 
-Completed 2026-09-07. Package version 0.1.0, stable vendored HTMX 4.0.0. The source suite contains **49 backend/integration tests and 15 real-browser scenarios**, with multiple workflow assertions per browser scenario. No browser tests are mocked or skipped in the final matrix.
+Updated 2026-09-08. Package version {package_version}, stable vendored HTMX 4.0.0. The source suite contains **{backend_count} backend/integration tests and {browser_count} real-browser scenarios**, with multiple workflow assertions per browser scenario. No browser tests are mocked or skipped in the final matrix.
 
 ## Final test matrix
 
@@ -113,7 +121,7 @@ Completed 2026-09-07. Package version 0.1.0, stable vendored HTMX 4.0.0. The sou
 |---|---|---|---|
 {rows}
 
-**256 passing source-suite executions** across four environments. Browser engine: Chromium 151.0.7922.34 (Playwright 1.62.0), macOS arm64. Tests use SQLite, an actual Django live server, real form submissions and local static assets. Browser errors are asserted absent.
+**{total} passing source-suite executions** across four environments. Browser engine: Chromium 151.0.7922.34 (Playwright 1.62.0), macOS arm64. Tests use SQLite, an actual Django live server, real form submissions and local static assets. Browser errors are asserted absent.
 
 ## Independent wheel installations
 
@@ -125,24 +133,23 @@ Each generated project has its own non-editable environment, Django installation
 
 **3 additional fresh-project tests passed.** Each project also passed migrations, Django system checks and collectstatic. Desktop/mobile saved-state screenshots from each installation are in the [walkthrough](WALKTHROUGH.md). The reports record the exact wheel SHA-256 and installed import path.
 
-Verified wheel: `{wheel['path']}`  
+Verified wheel: `{wheel['path']}`
+
 SHA-256: `{wheel['sha256']}`
 
 [Artifact sizes and checksums](../evidence/artifacts.json), [fresh-install machine-readable report](../evidence/fresh-install.json), [test matrix JSON](../evidence/test-matrix.json), [HTMX version/provenance](../evidence/htmx-version.json).
 
-Wheel inspection confirmed the Python app, template override, template tag, CSS, JavaScript, pinned HTMX source and both licenses are present; example code, test files and databases are absent from the wheel. The source distribution includes the example, tests/conftest and reproducible verification scripts. Build artifacts are under dist/ and are not remotely published.
+Wheel inspection confirmed the Python app, template override, template tag, JavaScript, pinned HTMX source and both licenses are present; example code, test files and databases are absent from the wheel. The wheel contains no CSS files. The source distribution includes the example, tests/conftest and reproducible verification scripts. Build artifacts are under dist/ and are not remotely published.
 
-## UI/UX findings and corrections
+## Default Django appearance restored in 0.1.1
 
-- Select2 loaded after a previous page's jquery.init had lost its temporary global. The loader now briefly bridges Django's jQuery only while Select2 media load, and restores it afterward.
-- Stock widget scripts assume fresh documents. Per-page initialization/cleanup now covers inlines, calendars, selectors, actions, filters, themes, cancellation and prepopulation. Repeated-navigation tests check widget counts and global-listener counts.
-- Django 6.1's nested changelist retained a desktop filter width on mobile. The mobile layout now expands the table/search area, keeps filters collapsible and confines scrolling to the table.
-- The sidebar retained a desktop offset on mobile. Its mobile position and usable width are now asserted.
-- Django's viewport-based text-field width clipped controls inside padded form rows. Form controls now fit their containers; the browser checks the actual field width.
-- A nonce-only script policy needed the active document nonce retained across later script loads. This is implemented and tested without unsafe-eval.
-- Django 5.2 includes a legacy unusable-password script removed in 6.x. It has an explicit version-aware lifecycle entry, tested via user creation and password reset.
-- Response middleware order is reversed by Django. GZip integration is verified, and a system check warns when compression/ETag/cache middleware would run before the adapter can transform HTML.
-- Loading/live-region, focused errors, retained drafts after failures, successful retry, duplicate-submit prevention, keyboard menu closing, browser history, permission boundaries and native fallback have browser evidence.
+The custom theme, mobile navigation/filter buttons, sticky save bar, progress bar and floating toast have been removed. Django's own stylesheet set, cascade order, colours, fonts, layout and responsive breakpoints are preserved. The loader also removes obsolete stylesheets when navigating away from a page and waits for new styles before initializing widgets.
+
+Pending submissions use the existing controls' disabled state and a visually hidden live region. Request errors use Django's standard errornote class. HTMX 4 navigation, forms, widget lifecycle, focus management, CSRF, permissions, history and native fallbacks remain active.
+
+Four visual scenarios cover desktop/mobile and light/dark themes, each comparing nine pages with Django's unmodified admin/base.html. The baseline has no library scripts or stylesheet. Tests require identical stylesheet order, computed styles and element geometry, and matching screenshots (up to 100 native-control corner pixels may differ by at most 8/255 per channel due to browser antialiasing). They also assert that navigation uses HTMX requests and the original enhanced document stays loaded. See [paired native/enhanced evidence](STYLE_PARITY.md).
+
+Earlier lifecycle, nonce and Django 5.2 password-widget fixes remain covered by the full regression suite. The initial custom responsive styling described in the 0.1.0 task history is superseded by this default-appearance contract.
 
 ## Scope and limits
 
@@ -151,6 +158,26 @@ See [COVERAGE.md](COVERAGE.md) for the feature-to-test mapping and precise bound
 These limits are documented integration boundaries; the implemented and tested core admin flows are complete. No remote push, package publication or deployment was requested or performed.
 '''
     (ROOT / 'docs/VERIFICATION.md').write_text(report)
+    parity_rows = []
+    comparisons = []
+    for series in sorted({row['django'] for row in matrix}):
+        for result_file in sorted((ROOT / 'evidence/style-parity' / series).glob('*.json')):
+            cases = json.loads(result_file.read_text())
+            assert len(cases) == 9 and all(case['matches_default'] for case in cases), result_file
+            comparisons.extend(cases)
+            parity_rows.append(f"| {series} | {cases[0]['viewport']['width']} px | {cases[0]['theme']} | 9 matched | [details](../evidence/style-parity/{series}/{result_file.name}) |")
+    assert len(parity_rows) == 12, 'Expected desktop/mobile light/dark comparisons on all three Django series'
+    (ROOT / 'evidence/style-parity.json').write_text(json.dumps({'comparisons': len(comparisons), 'all_match': True, 'computed_styles_and_geometry': 'exact', 'maximum_pixel_channel_difference': 8, 'maximum_changed_pixels_per_image': 100}, indent=2) + '\n')
+    parity_doc = ['# Default Django appearance', '', 'Version 0.1.1 adds HTMX behavior without a theme stylesheet or extra navigation controls. The reference is Django\'s original admin/base.html, with this library disabled and absent from the reference page.', '', 'Each comparison checks stylesheet order, exact computed styles and element geometry, and screenshots. Focus/hover are neutralized for visual comparison. Up to 100 antialiased native-control corner pixels may differ by at most 8 out of 255 per colour channel; dimensions and computed styles of the visible controls must still match exactly. Actual HTMX request headers and a persistent window marker prove that the enhanced document is not reloaded.', '', '| Django | Viewport | Theme | Result | Evidence |', '|---|---|---|---|---|', *parity_rows, '', 'The nine states are login, dashboard, app index, changelist, change form, history, deletion, password change and return to a list after visiting forms. The latter checks that form-specific CSS does not leak into another page.', '']
+    latest = sorted({row['django'] for row in matrix})[-1]
+    for width in [1440, 390]:
+        for theme in ['light', 'dark']:
+            for name in ['login', 'dashboard', 'changelist', 'change-form', 'delete']:
+                stem = f'{width}-{theme}-{name}'
+                images = [ROOT / 'evidence/style-parity' / latest / f'{stem}-{kind}.png' for kind in ['native', 'htmx']]
+                assert all(path.exists() for path in images)
+                parity_doc.extend([f'## {name} · {width}px · {theme}', '', '| Default Django | With HTMX |', '|---|---|', f'| [![Default Django]({images[0]})]({images[0]}) | [![With HTMX]({images[1]})]({images[1]}) |', ''])
+    (ROOT / 'docs/STYLE_PARITY.md').write_text('\n'.join(parity_doc))
     print(f'Validated artifacts; generated {len(steps)} ordered screenshots and verification report.')
 
 

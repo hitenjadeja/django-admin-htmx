@@ -1,12 +1,12 @@
 [
   {
-    "path": "dist/django_admin_htmx-0.1.0-py3-none-any.whl",
-    "bytes": 42927,
-    "sha256": "e20e16aa0c28c2f6b4aa33eaf5d680cf48694928ca94ae7fe2bc69259cdd5559"
+    "path": "dist/django_admin_htmx-0.1.1-py3-none-any.whl",
+    "bytes": 40699,
+    "sha256": "9f34016b5e2447edcb6f610d2c2381dc55a2d5956c435ed2f226a99aa3369e6c"
   },
   {
-    "path": "dist/django_admin_htmx-0.1.0.tar.gz",
-    "bytes": 79102,
-    "sha256": "72a4fa77cbc2ddfdd50ee3a0b3e6475fc8c8d492115108fbc820e5af1099611c"
+    "path": "dist/django_admin_htmx-0.1.1.tar.gz",
+    "bytes": 82908,
+    "sha256": "f8e7ac8047dca8665a264d047bf65d9623967ad77c5333f7689ecb394e2a2c86"
   }
 ]

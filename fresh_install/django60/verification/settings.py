@@ -117,6 +117,7 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 
+
 # BEGIN WHEEL VERIFICATION
 INSTALLED_APPS.insert(0, 'admin_htmx')
 INSTALLED_APPS.append('library')

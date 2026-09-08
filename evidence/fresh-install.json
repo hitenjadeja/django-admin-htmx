@@ -3,30 +3,30 @@
     "series": "5.2",
     "version": "5.2.17",
     "package_import": "/Users/hiten/workspace/djang-admin-htmx/.venvs/fresh-django52/lib/python3.13/site-packages/admin_htmx/__init__.py",
-    "wheel": "dist/django_admin_htmx-0.1.0-py3-none-any.whl",
-    "sha256": "e20e16aa0c28c2f6b4aa33eaf5d680cf48694928ca94ae7fe2bc69259cdd5559",
+    "wheel": "dist/django_admin_htmx-0.1.1-py3-none-any.whl",
+    "sha256": "9f34016b5e2447edcb6f610d2c2381dc55a2d5956c435ed2f226a99aa3369e6c",
     "tests": "1 fresh-project test, backend + real Chromium, passed",
-    "collectstatic": "4 static files copied to '/Users/hiten/workspace/djang-admin-htmx/fresh_install/django52/staticfiles', 127 unmodified.",
+    "collectstatic": "3 static files copied to '/Users/hiten/workspace/djang-admin-htmx/fresh_install/django52/staticfiles', 127 unmodified.",
     "project": "/Users/hiten/workspace/djang-admin-htmx/fresh_install/django52"
   },
   {
     "series": "6.0",
     "version": "6.0.8",
     "package_import": "/Users/hiten/workspace/djang-admin-htmx/.venvs/fresh-django60/lib/python3.13/site-packages/admin_htmx/__init__.py",
-    "wheel": "dist/django_admin_htmx-0.1.0-py3-none-any.whl",
-    "sha256": "e20e16aa0c28c2f6b4aa33eaf5d680cf48694928ca94ae7fe2bc69259cdd5559",
+    "wheel": "dist/django_admin_htmx-0.1.1-py3-none-any.whl",
+    "sha256": "9f34016b5e2447edcb6f610d2c2381dc55a2d5956c435ed2f226a99aa3369e6c",
     "tests": "1 fresh-project test, backend + real Chromium, passed",
-    "collectstatic": "4 static files copied to '/Users/hiten/workspace/djang-admin-htmx/fresh_install/django60/staticfiles', 130 unmodified.",
+    "collectstatic": "3 static files copied to '/Users/hiten/workspace/djang-admin-htmx/fresh_install/django60/staticfiles', 130 unmodified.",
     "project": "/Users/hiten/workspace/djang-admin-htmx/fresh_install/django60"
   },
   {
     "series": "6.1",
     "version": "6.1.1",
     "package_import": "/Users/hiten/workspace/djang-admin-htmx/.venvs/fresh-django61/lib/python3.13/site-packages/admin_htmx/__init__.py",
-    "wheel": "dist/django_admin_htmx-0.1.0-py3-none-any.whl",
-    "sha256": "e20e16aa0c28c2f6b4aa33eaf5d680cf48694928ca94ae7fe2bc69259cdd5559",
+    "wheel": "dist/django_admin_htmx-0.1.1-py3-none-any.whl",
+    "sha256": "9f34016b5e2447edcb6f610d2c2381dc55a2d5956c435ed2f226a99aa3369e6c",
     "tests": "1 fresh-project test, backend + real Chromium, passed",
-    "collectstatic": "4 static files copied to '/Users/hiten/workspace/djang-admin-htmx/fresh_install/django61/staticfiles', 130 unmodified.",
+    "collectstatic": "3 static files copied to '/Users/hiten/workspace/djang-admin-htmx/fresh_install/django61/staticfiles', 130 unmodified.",
     "project": "/Users/hiten/workspace/djang-admin-htmx/fresh_install/django61"
   }
 ]
