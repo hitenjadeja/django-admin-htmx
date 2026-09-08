@@ -21,3 +21,5 @@ evidence/browser-results/
 .coverage
 htmlcov/
 .ruff_cache/
+# Local dependency resolution used by the ty pre-commit hook.
+uv.lock

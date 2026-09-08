@@ -1,5 +1,9 @@
 # Verification report
 
+This records the earlier release matrix, before the unreleased visible loading
+indicator. See [loading feedback](LOADING_FEEDBACK.md) for that change's separate
+verification and screenshots; the historical results below are not a new run.
+
 This is the historical local verification report for **0.1.1**. Current releases
 and their checks are available in [GitHub Actions](https://github.com/hitenjadeja/django-admin-htmx/actions)
 and [GitHub Releases](https://github.com/hitenjadeja/django-admin-htmx/releases).

@@ -49,11 +49,29 @@ Run `python manage.py check` and `python manage.py collectstatic --noinput`. Ser
 
 Do not load another HTMX core on enhanced admin pages. Keep `{{ block.super }}` when overriding `extrahead` in admin templates. The package has no migrations and does not change your models.
 
+## How it works
+
+HTMX sends eligible admin links and forms to Django's existing URLs without a
+full browser reload. Django still renders complete HTML pages and owns
+permissions, CSRF checks, validation, saving, messages and audit logging. The
+browser swaps the incoming `<body>`, synchronizes Django's stylesheets and
+initializes the new page's widgets. Successful admin redirects become
+`HX-Location` responses followed by a GET.
+
+Validation errors display Django's returned form. HTTP errors and network
+failures before a swap keep the current form visible with an error message;
+failed POSTs are never automatically retried. Session-expiry redirects show
+Django's login page.
+
+See [the request flow and implementation map](docs/ARCHITECTURE.md#how-it-works)
+and [error handling and recovery](docs/ARCHITECTURE.md#error-handling) for the
+diagram, failure cases and compatibility boundaries.
+
 ## Default Django appearance
 
-The package ships no CSS and does not change Django's colours, fonts, spacing, widgets, navigation or responsive breakpoints. It loads exactly the stylesheets rendered by Django for each page, in the same order, and removes styles from the previous page after navigation. Existing project branding and template/style customizations remain your own.
+The package preserves Django's colours, fonts, spacing, widgets, navigation and responsive breakpoints. Django's stylesheets keep their original order, and obsolete page styles are removed after navigation. One small local stylesheet targets only the transient loading indicator. Existing project branding and template/style customizations remain your own.
 
-There are no added mobile menu/filter buttons, sticky save bar, progress bar or floating toast. Requests announce their status to assistive technology and temporarily disable the form's existing submit controls. Request failures appear with Django's existing `errornote` styling; normal validation and success messages remain Django's own.
+Requests announce “Loading…” to assistive technology immediately. After 200 ms, a thin top progress bar and a visible status badge appear until the page and its widgets are ready. These use Django's colors, respect reduced motion and do not shift layout or intercept clicks. Existing submit controls are temporarily disabled, and overlapping requests are dropped. Request failures clear the loading feedback and use Django's existing `errornote` styling; normal validation and success messages remain Django's own. See the [loading-feedback walkthrough](docs/LOADING_FEEDBACK.md).
 
 Desktop/mobile screenshots in both light and dark modes are compared with Django's original `admin/base.html`, with the library disabled. Those checks also verify that the enhanced document stays loaded and navigation uses actual HTMX requests. See [the visual comparison evidence](https://github.com/hitenjadeja/django-admin-htmx/blob/main/docs/STYLE_PARITY.md).
 
@@ -64,7 +82,7 @@ Desktop/mobile screenshots in both light and dark modes are compared with Django
 - Add/change/delete/history, validation errors, preserved filters and every standard save variant.
 - Bulk selection, select across pages, actions, intermediate confirmations and file downloads.
 - Tabular/stacked inlines, date/time widgets, prepopulated fields, uploads, related widgets and filtered multi-selects.
-- Accessible request status, native disabled submit controls, Django-styled error feedback, duplicate-submit prevention, focus recovery and browser back/forward.
+- Visible and accessible loading feedback, native disabled submit controls, Django-styled error feedback, duplicate-submit prevention, focus recovery and browser back/forward.
 - Django's own desktop/mobile layout, theme toggle, navigation and filter controls.
 
 Django's related-object popups retain their native opener/dismiss protocol. Autocomplete retains Django's Select2 AJAX endpoint. These controls are initialized correctly after HTMX navigation rather than being replaced with new protocols.

@@ -1,8 +1,12 @@
 import os
 import tempfile
 from pathlib import Path
+from typing import cast
+
 import pytest
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
+
 from example.catalog.models import Author, Book, Tag
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -14,11 +18,15 @@ os.environ["TMPDIR"] = tempfile.tempdir
 
 @pytest.fixture
 def data(db):
-    User = get_user_model()
-    admin = User.objects.create_superuser("admin", "admin@example.test", "Local-demo-2026!")
+    user_model = cast(type[User], get_user_model())
+    admin = user_model.objects.create_superuser(
+        "admin", "admin@example.test", "Local-demo-2026!"
+    )
     author = Author.objects.create(name="Maya Rivers", email="maya@example.test")
     tag = Tag.objects.create(name="Design")
-    book = Book.objects.create(title="Field notes", slug="field-notes", author=author, price=12)
+    book = Book.objects.create(
+        title="Field notes", slug="field-notes", author=author, price=12
+    )
     return {"admin": admin, "author": author, "tag": tag, "book": book}
 
 
@@ -29,9 +37,27 @@ def auth_client(client, data):
 
 
 def book_payload(author, **overrides):
-    fields = dict(title="A new book", slug="a-new-book", author=str(author.pk), reviewer="", status="draft", price="12.00", published_at_0="2026-09-07", published_at_1="12:30:00", notes="", **{
-        "chapter_set-TOTAL_FORMS": "0", "chapter_set-INITIAL_FORMS": "0", "chapter_set-MIN_NUM_FORMS": "0", "chapter_set-MAX_NUM_FORMS": "1000",
-        "note_set-TOTAL_FORMS": "0", "note_set-INITIAL_FORMS": "0", "note_set-MIN_NUM_FORMS": "0", "note_set-MAX_NUM_FORMS": "1000", "_save": "Save",
-    })
+    fields = dict(
+        title="A new book",
+        slug="a-new-book",
+        author=str(author.pk),
+        reviewer="",
+        status="draft",
+        price="12.00",
+        published_at_0="2026-09-07",
+        published_at_1="12:30:00",
+        notes="",
+        **{
+            "chapter_set-TOTAL_FORMS": "0",
+            "chapter_set-INITIAL_FORMS": "0",
+            "chapter_set-MIN_NUM_FORMS": "0",
+            "chapter_set-MAX_NUM_FORMS": "1000",
+            "note_set-TOTAL_FORMS": "0",
+            "note_set-INITIAL_FORMS": "0",
+            "note_set-MIN_NUM_FORMS": "0",
+            "note_set-MAX_NUM_FORMS": "1000",
+            "_save": "Save",
+        },
+    )
     fields.update(overrides)
     return fields

@@ -1,0 +1,16 @@
+minimum_pre_commit_version: '4.6.0'
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.6
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+  - repo: https://github.com/astral-sh/ty-pre-commit
+    rev: v0.0.79
+    hooks:
+      - id: ty
+        # Resolve test/dev dependencies in a temporary environment. The hook
+        # checks the whole project, including commits that only delete files.
+        args: [--isolated, --extra=test, --extra=dev]

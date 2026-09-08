@@ -3,11 +3,11 @@
 
 import argparse
 import ast
-from email.parser import Parser
-from pathlib import Path
 import re
 import tarfile
 import zipfile
+from email.parser import Parser
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = "django_admin_htmx"
@@ -32,7 +32,8 @@ def release_notes(version, root=ROOT):
     changelog = (root / "CHANGELOG.md").read_text()
     match = re.search(
         rf"^## \[{re.escape(version)}\] - \d{{4}}-\d{{2}}-\d{{2}}\n(.*?)(?=^## |^\[Unreleased\]:|\Z)",
-        changelog, re.MULTILINE | re.DOTALL,
+        changelog,
+        re.MULTILINE | re.DOTALL,
     )
     if not match or not match.group(1).strip():
         raise ValueError(f"Missing dated, nonempty changelog entry for {version}")
@@ -44,11 +45,15 @@ def check_distributions(directory, version):
     source = directory / f"{PACKAGE}-{version}.tar.gz"
     archives = set(directory.glob("*.whl")) | set(directory.glob("*.tar.gz"))
     if archives != {wheel, source}:
-        raise ValueError("Build into a clean directory containing only this version's wheel and sdist")
+        raise ValueError(
+            "Build into a clean directory containing only this version's wheel and sdist"
+        )
     required = {
-        "admin_htmx/__init__.py", "admin_htmx/py.typed",
+        "admin_htmx/__init__.py",
+        "admin_htmx/py.typed",
         "admin_htmx/templates/admin/base.html",
         "admin_htmx/static/admin_htmx/admin.js",
+        "admin_htmx/static/admin_htmx/loading.css",
         "admin_htmx/static/admin_htmx/vendor/htmx-4.0.0.js",
         "admin_htmx/static/admin_htmx/vendor/HTMX-LICENSE",
         "admin_htmx/templatetags/admin_htmx.py",
@@ -58,7 +63,15 @@ def check_distributions(directory, version):
         missing = required - names
         if missing:
             raise ValueError(f"Wheel missing package assets: {sorted(missing)}")
-        if any(name.endswith((".css", ".sqlite3")) or name.startswith(("tests/", "example/")) for name in names):
+        if any(
+            (
+                name.endswith(".css")
+                and name != "admin_htmx/static/admin_htmx/loading.css"
+            )
+            or name.endswith(".sqlite3")
+            or name.startswith(("tests/", "example/"))
+            for name in names
+        ):
             raise ValueError("Wheel contains a theme, database, example or test app")
         metadata_dir = f"{PACKAGE}-{version}.dist-info"
         metadata = Parser().parsestr(archive.read(f"{metadata_dir}/METADATA").decode())
@@ -66,16 +79,29 @@ def check_distributions(directory, version):
             raise ValueError("Built package name/version differs from the source")
         if metadata["License-Expression"] != "BSD-3-Clause":
             raise ValueError("Expected BSD-3-Clause license metadata")
-        for license_file in ("LICENSE", "src/admin_htmx/static/admin_htmx/vendor/HTMX-LICENSE"):
+        for license_file in (
+            "LICENSE",
+            "src/admin_htmx/static/admin_htmx/vendor/HTMX-LICENSE",
+        ):
             if f"{metadata_dir}/licenses/{license_file}" not in names:
                 raise ValueError(f"Missing distribution license: {license_file}")
     with tarfile.open(source) as archive:
         prefix = f"{PACKAGE}-{version}/"
         names = {name.removeprefix(prefix) for name in archive.getnames()}
-        required_source = {"pyproject.toml", "LICENSE", "README.md", "CHANGELOG.md",
-                           "AGENTS.md", "CLAUDE.md", "CONTRIBUTING.md", "SECURITY.md",
-                           "tests/conftest.py", "example/catalog/models.py",
-                           "scripts/check_release.py", "scripts/verify_fresh_install.py"}
+        required_source = {
+            "pyproject.toml",
+            "LICENSE",
+            "README.md",
+            "CHANGELOG.md",
+            "AGENTS.md",
+            "CLAUDE.md",
+            "CONTRIBUTING.md",
+            "SECURITY.md",
+            "tests/conftest.py",
+            "example/catalog/models.py",
+            "scripts/check_release.py",
+            "scripts/verify_fresh_install.py",
+        }
         missing = required_source - names
         if missing:
             raise ValueError(f"Source distribution missing files: {sorted(missing)}")
@@ -87,7 +113,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--tag", help="Require the Git tag to equal v<package version>")
     parser.add_argument("--dist-dir", type=Path)
-    parser.add_argument("--notes", type=Path, help="Write this release's changelog notes")
+    parser.add_argument(
+        "--notes", type=Path, help="Write this release's changelog notes"
+    )
     args = parser.parse_args()
     version = read_version()
     if args.tag and args.tag != f"v{version}":

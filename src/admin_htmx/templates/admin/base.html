@@ -2,6 +2,7 @@
 {% load static i18n admin_htmx %}
 {% block extrahead %}
 {{ block.super }}
+<link rel="stylesheet" href="{% static 'admin_htmx/loading.css' %}">
 <meta name="admin-htmx-root" content="{% url 'admin:index' %}">
 <meta name="admin-htmx-labels" data-loading="{% translate 'Loading…' %}" data-error="{% translate 'The request could not be completed. Your entries are still here. Please try again.' %}">
 <script src="{% static 'admin_htmx/vendor/htmx-4.0.0.js' %}" defer {% admin_htmx_nonce %}></script>

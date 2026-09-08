@@ -4,33 +4,48 @@
 Run with a project-local Python 3.12+ and uv installed. Every environment, cache,
 project, database, static collection, screenshot and report stays in this repo.
 """
+
 import argparse
 import hashlib
 import json
 import os
 import re
-from pathlib import Path
 import subprocess
 import sys
+from pathlib import Path
+
 from check_release import read_version
 
 ROOT = Path(__file__).resolve().parents[1]
-ENV = {**os.environ, "UV_CACHE_DIR": str(ROOT / ".cache/uv"), "TMPDIR": str(ROOT / ".cache/tmp"), "PLAYWRIGHT_BROWSERS_PATH": str(ROOT / ".cache/ms-playwright"), "SOURCE_DATE_EPOCH": "1788825600"}
+ENV: dict[str, str] = {
+    **os.environ,
+    "UV_CACHE_DIR": str(ROOT / ".cache/uv"),
+    "TMPDIR": str(ROOT / ".cache/tmp"),
+    "PLAYWRIGHT_BROWSERS_PATH": str(ROOT / ".cache/ms-playwright"),
+    "SOURCE_DATE_EPOCH": "1788825600",
+}
 ENV.pop("PYTHONPATH", None)
 ENV.pop("DJANGO_SETTINGS_MODULE", None)
 (ROOT / ".cache/tmp").mkdir(parents=True, exist_ok=True)
 
 
-def run(*args, cwd=ROOT):
+def run(*args: str | Path, cwd: Path = ROOT) -> str:
     print("+", " ".join(map(str, args)), flush=True)
-    result = subprocess.run(list(map(str, args)), cwd=cwd, env=ENV, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    result = subprocess.run(
+        list(map(str, args)),
+        cwd=cwd,
+        env=ENV,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
     print(result.stdout, flush=True)
     if result.returncode:
         raise SystemExit(result.returncode)
     return result.stdout
 
 
-MODELS = '''from django.db import models
+MODELS = """from django.db import models
 
 class Publisher(models.Model):
     name = models.CharField(max_length=100)
@@ -46,8 +61,8 @@ class Publication(models.Model):
 class Page(models.Model):
     publication = models.ForeignKey(Publication, on_delete=models.CASCADE)
     text = models.CharField(max_length=100)
-'''
-ADMIN = '''from django.contrib import admin
+"""
+ADMIN = """from django.contrib import admin
 from .models import Publisher, Publication, Page
 
 @admin.register(Publisher)
@@ -65,8 +80,8 @@ class PublicationAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ['title']}
     autocomplete_fields = ['publisher']
     inlines = [PageInline]
-'''
-TESTS = '''import os
+"""
+TESTS = """import os
 from pathlib import Path
 from django.contrib.auth import get_user_model
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
@@ -124,7 +139,8 @@ class WheelInstallationTests(StaticLiveServerTestCase):
             shot = Path.cwd() / 'wheel-saved-desktop.png'
             page.screenshot(path=str(shot), full_page=True)
             page.set_viewport_size({'width':390, 'height':844})
-            expect(page.locator('link[href*="admin_htmx"]')).to_have_count(0)
+            expect(page.locator('link[href*="admin_htmx/loading.css"]')).to_have_count(1)
+            expect(page.locator('#admin-htmx-status')).to_have_class('visually-hidden')
             expect(page.locator('#admin-htmx-nav, #admin-htmx-filters')).to_have_count(0)
             page.screenshot(path=str(Path.cwd() / 'wheel-saved-mobile.png'), full_page=True)
             browser.close()
@@ -135,60 +151,89 @@ class WheelInstallationTests(StaticLiveServerTestCase):
         print('WHEEL_IMPORT=' + str(installed))
         print('DJANGO_VERSION=' + django.get_version())
         print('HTMX_VERSION=4.0.0')
-'''
+"""
 
 
 def verify(series, wheel):
-    name = 'django' + series.replace('.', '')
-    project = ROOT / 'fresh_install' / name
+    name = "django" + series.replace(".", "")
+    project = ROOT / "fresh_install" / name
     project.mkdir(parents=True, exist_ok=True)
-    env_dir = ROOT / '.venvs' / ('fresh-' + name)
-    if not (env_dir / 'bin/python').exists():
-        base = Path(sys._base_executable).resolve()
-        run('uv', 'venv', env_dir, '--python', base)
-    python = env_dir / 'bin/python'
-    run('uv', 'pip', 'install', '--python', python, '--reinstall-package', 'django-admin-htmx', wheel, f'Django=={series}.*', 'playwright>=1.51')
-    if not (project / 'manage.py').exists():
-        run(python, '-m', 'django', 'startproject', 'verification', project)
-        run(python, 'manage.py', 'startapp', 'library', cwd=project)
-    (project / 'library/models.py').write_text(MODELS)
-    (project / 'library/admin.py').write_text(ADMIN)
-    (project / 'library/tests.py').write_text(TESTS)
-    settings = project / 'verification/settings.py'
-    contents = settings.read_text().split('# BEGIN WHEEL VERIFICATION')[0]
-    contents = re.sub(r'^SECRET_KEY = .*$', "SECRET_KEY = 'fresh-install-local-test-only'", contents, flags=re.MULTILINE)
-    contents += '''\n# BEGIN WHEEL VERIFICATION
+    env_dir = ROOT / ".venvs" / ("fresh-" + name)
+    if not (env_dir / "bin/python").exists():
+        base = Path(getattr(sys, "_base_executable", sys.executable)).resolve()
+        run("uv", "venv", env_dir, "--python", base)
+    python = env_dir / "bin/python"
+    run(
+        "uv",
+        "pip",
+        "install",
+        "--python",
+        python,
+        "--reinstall-package",
+        "django-admin-htmx",
+        wheel,
+        f"Django=={series}.*",
+        "playwright>=1.51",
+    )
+    if not (project / "manage.py").exists():
+        run(python, "-m", "django", "startproject", "verification", project)
+        run(python, "manage.py", "startapp", "library", cwd=project)
+    (project / "library/models.py").write_text(MODELS)
+    (project / "library/admin.py").write_text(ADMIN)
+    (project / "library/tests.py").write_text(TESTS)
+    settings = project / "verification/settings.py"
+    contents = settings.read_text().split("# BEGIN WHEEL VERIFICATION")[0]
+    contents = re.sub(
+        r"^SECRET_KEY = .*$",
+        "SECRET_KEY = 'fresh-install-local-test-only'",
+        contents,
+        flags=re.MULTILINE,
+    )
+    contents += """\n# BEGIN WHEEL VERIFICATION
 INSTALLED_APPS.insert(0, 'admin_htmx')
 INSTALLED_APPS.append('library')
 MIDDLEWARE.append('admin_htmx.middleware.AdminHtmxMiddleware')
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-'''
+"""
     settings.write_text(contents)
-    run(python, 'manage.py', 'makemigrations', 'library', '--noinput', cwd=project)
-    run(python, 'manage.py', 'migrate', '--noinput', cwd=project)
-    run(python, 'manage.py', 'check', cwd=project)
-    static_output = run(python, 'manage.py', 'collectstatic', '--noinput', cwd=project)
-    output = run(python, 'manage.py', 'test', 'library', '--noinput', '-v', '2', cwd=project)
-    (project / 'verification-output.txt').write_text(output)
-    return {'series': series, 'version': output.split('DJANGO_VERSION=')[1].splitlines()[0], 'package_import': output.split('WHEEL_IMPORT=')[1].splitlines()[0], 'wheel': str(wheel.relative_to(ROOT)), 'sha256': hashlib.sha256(wheel.read_bytes()).hexdigest(), 'tests': '1 fresh-project test, backend + real Chromium, passed', 'collectstatic': static_output.strip(), 'project': str(project)}
+    run(python, "manage.py", "makemigrations", "library", "--noinput", cwd=project)
+    run(python, "manage.py", "migrate", "--noinput", cwd=project)
+    run(python, "manage.py", "check", cwd=project)
+    static_output = run(python, "manage.py", "collectstatic", "--noinput", cwd=project)
+    output = run(
+        python, "manage.py", "test", "library", "--noinput", "-v", "2", cwd=project
+    )
+    (project / "verification-output.txt").write_text(output)
+    return {
+        "series": series,
+        "version": output.split("DJANGO_VERSION=")[1].splitlines()[0],
+        "package_import": output.split("WHEEL_IMPORT=")[1].splitlines()[0],
+        "wheel": str(wheel.relative_to(ROOT)),
+        "sha256": hashlib.sha256(wheel.read_bytes()).hexdigest(),
+        "tests": "1 fresh-project test, backend + real Chromium, passed",
+        "collectstatic": static_output.strip(),
+        "project": str(project),
+    }
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--series', nargs='+', default=['5.2', '6.0', '6.1'])
-    parser.add_argument('--skip-build', action='store_true')
-    parser.add_argument('--dist-dir', type=Path, default=ROOT / 'dist')
+    parser.add_argument("--series", nargs="+", default=["5.2", "6.0", "6.1"])
+    parser.add_argument("--skip-build", action="store_true")
+    parser.add_argument("--dist-dir", type=Path, default=ROOT / "dist")
     args = parser.parse_args()
     if not args.skip_build:
-        run('uv', 'build', '--out-dir', args.dist_dir, '--python', sys.executable)
+        run("uv", "build", "--out-dir", args.dist_dir, "--python", sys.executable)
     version = read_version()
-    wheel = next(args.dist_dir.resolve().glob(f'django_admin_htmx-{version}-*.whl'))
+    wheel = next(args.dist_dir.resolve().glob(f"django_admin_htmx-{version}-*.whl"))
     results = [verify(series, wheel) for series in args.series]
-    (ROOT / 'evidence').mkdir(exist_ok=True)
-    (ROOT / 'evidence/fresh-install.json').write_text(json.dumps(results, indent=2) + '\n')
+    (ROOT / "evidence").mkdir(exist_ok=True)
+    (ROOT / "evidence/fresh-install.json").write_text(
+        json.dumps(results, indent=2) + "\n"
+    )
     print(json.dumps(results, indent=2))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

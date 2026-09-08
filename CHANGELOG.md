@@ -7,6 +7,21 @@ from a GitHub release.
 
 ## [Unreleased]
 
+### Added
+
+- A slim progress bar and visible “Loading…” status after 200 ms for slow admin
+  navigation and submissions, lasting through redirects and widget setup.
+  Feedback follows Django's light/dark colors and reduced-motion preferences;
+  duplicate-submit protection and retained-form error recovery remain active.
+- A request-flow diagram, implementation map and error-handling/recovery guide
+  in the architecture documentation, linked from the README.
+- Pre-commit hooks for Ruff linting/formatting and ty type checking, matching CI
+  checks, development dependencies and contributor setup instructions.
+
+### Changed
+
+- Formatted maintained Python code and clarified types for the new checks.
+
 ## [0.1.2] - 2026-09-08
 
 ### Added

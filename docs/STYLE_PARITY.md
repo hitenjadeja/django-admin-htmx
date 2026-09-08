@@ -1,5 +1,10 @@
 # Default Django appearance
 
+This is the historical release comparison. The unreleased loading indicator
+adds a narrowly scoped stylesheet; idle pages still undergo the same pixel,
+computed-style and geometry checks. See [loading feedback](LOADING_FEEDBACK.md)
+for the new verification run.
+
 The evidence below records the 0.1.1 local run. The current CI test also waits for
 finite CSS transitions to finish before comparing styles. It allows at most
 100 changed pixels with a channel delta of 16/255 to accommodate Linux native

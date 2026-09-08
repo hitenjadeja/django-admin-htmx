@@ -8,6 +8,8 @@
     const pageListeners = [];
     let hydrating = false;
     let requests = 0;
+    let loadingTimer;
+    let loadingVisible = false;
     let navigated = false;
     let stylesReady = Promise.resolve();
     const labels = document.querySelector('meta[name="admin-htmx-labels"]')?.dataset || {};
@@ -47,21 +49,44 @@
         return box;
     }
 
+    function stopLoading() {
+        clearTimeout(loadingTimer);
+        loadingTimer = undefined;
+        loadingVisible = false;
+    }
+
     function busy() {
         const active = hydrating || requests > 0;
         document.getElementById('content-start')?.setAttribute('aria-busy', String(active));
-        if (active) {
-            status().className = 'visually-hidden';
-            (document.getElementById('header') || document.getElementById('content') || document.body).append(status());
-            status().textContent = labels.loading || 'Loading…';
-            status().dataset.state = 'loading';
-        } else if (status().dataset.state !== 'error') {
-            status().textContent = '';
-            delete status().dataset.state;
+        const box = status();
+        if (active && box.dataset.state !== 'error') {
+            box.className = loadingVisible ? 'admin-htmx-loading' : 'visually-hidden';
+            box.removeAttribute('tabindex');
+            (document.getElementById('header') || document.getElementById('content') || document.body).append(box);
+            const message = labels.loading || 'Loading…';
+            if (box.textContent !== message) box.textContent = message;
+            box.dataset.state = 'loading';
+            // Keep one delay across redirects and body/widget initialization.
+            if (!loadingVisible && loadingTimer === undefined) {
+                loadingTimer = setTimeout(() => {
+                    loadingTimer = undefined;
+                    if (!(hydrating || requests > 0) || status().dataset.state === 'error') return;
+                    loadingVisible = true;
+                    status().className = 'admin-htmx-loading';
+                }, 200);
+            }
+        } else if (!active) {
+            stopLoading();
+            if (box.dataset.state !== 'error') {
+                box.className = 'visually-hidden';
+                box.textContent = '';
+                delete box.dataset.state;
+            }
         }
     }
 
     function error(message) {
+        stopLoading();
         status().textContent = message || labels.error || 'The request could not be completed. Your entries are still here. Please try again.';
         status().dataset.state = 'error';
         status().className = 'errornote';
@@ -299,6 +324,7 @@
         if (!owned(event.detail.ctx)) return;
         if (hydrating) { event.preventDefault(); return; }
         requests++;
+        delete status().dataset.state;
         busy();
     });
     document.addEventListener('htmx:before:response', event => {

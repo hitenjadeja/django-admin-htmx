@@ -1,0 +1,52 @@
+/* Only the transient request indicator; Django owns all page/control styling. */
+#admin-htmx-status.admin-htmx-loading {
+    position: fixed;
+    inset-inline-end: 16px;
+    bottom: 16px;
+    z-index: 10000;
+    box-sizing: border-box;
+    max-width: calc(100vw - 32px);
+    margin: 0;
+    padding: 10px 16px;
+    border: 1px solid var(--hairline-color, #e8e8e8);
+    border-radius: 4px;
+    background: var(--body-bg, #fff);
+    color: var(--body-fg, #333);
+    font-size: 0.875rem;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+    pointer-events: none;
+}
+
+#admin-htmx-status.admin-htmx-loading::before,
+#admin-htmx-status.admin-htmx-loading::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    background: var(--accent, #f5dd5d);
+    pointer-events: none;
+}
+
+#admin-htmx-status.admin-htmx-loading::before {
+    opacity: 0.2;
+}
+
+#admin-htmx-status.admin-htmx-loading::after {
+    transform-origin: left;
+    animation: admin-htmx-progress 1.2s ease-in-out infinite;
+}
+
+@keyframes admin-htmx-progress {
+    0% { transform: scaleX(0); opacity: 1; }
+    80% { transform: scaleX(1); opacity: 1; }
+    100% { transform: scaleX(1); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #admin-htmx-status.admin-htmx-loading::after {
+        animation: none;
+    }
+}

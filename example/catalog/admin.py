@@ -1,9 +1,12 @@
 import csv
 import secrets
+
 from django.contrib import admin, messages
+from django.contrib.admin.helpers import ACTION_CHECKBOX_NAME
 from django.http import HttpResponse
 from django.template.response import TemplateResponse
 from django.urls import path
+
 from .models import Author, Book, Chapter, Edition, Note, Tag
 
 
@@ -29,10 +32,17 @@ def archive(modeladmin, request, queryset):
         count = queryset.update(status=Book.Status.ARCHIVED)
         modeladmin.message_user(request, f"Archived {count} books.")
         return None
-    return TemplateResponse(request, "admin/catalog/book/archive.html", {
-        **modeladmin.admin_site.each_context(request), "title": "Confirm archive", "books": queryset,
-        "opts": modeladmin.model._meta, "action_checkbox_name": admin.helpers.ACTION_CHECKBOX_NAME,
-    })
+    return TemplateResponse(
+        request,
+        "admin/catalog/book/archive.html",
+        {
+            **modeladmin.admin_site.each_context(request),
+            "title": "Confirm archive",
+            "books": queryset,
+            "opts": modeladmin.model._meta,
+            "action_checkbox_name": ACTION_CHECKBOX_NAME,
+        },
+    )
 
 
 @admin.action(description="Export selected books (CSV)")
@@ -79,7 +89,12 @@ class EditionAdmin(admin.ModelAdmin):
 admin.site.site_header = "Fieldwork · Administration"
 admin.site.site_title = "Fieldwork admin"
 admin.site.index_title = "Workspace overview"
-for model, cls in [(Book, BookAdmin), (Author, AuthorAdmin), (Tag, admin.ModelAdmin), (Edition, EditionAdmin)]:
+for model, cls in [
+    (Book, BookAdmin),
+    (Author, AuthorAdmin),
+    (Tag, admin.ModelAdmin),
+    (Edition, EditionAdmin),
+]:
     admin.site.register(model, cls)
 
 
@@ -89,20 +104,35 @@ class EditorialSite(admin.AdminSite):
     index_title = "Editorial workspace"
 
     def get_urls(self):
-        return [path("report/", self.admin_view(self.report), name="report")] + super().get_urls()
+        return [
+            path("report/", self.admin_view(self.report), name="report")
+        ] + super().get_urls()
 
     def report(self, request):
         request.current_app = self.name
         nonce = secrets.token_urlsafe(24) if "csp" in request.GET else None
-        response = TemplateResponse(request, "admin/catalog/report.html", {
-            **self.each_context(request), "title": "Editorial report", "native": "native" in request.GET,
-            "csp_nonce": nonce,
-        })
+        response = TemplateResponse(
+            request,
+            "admin/catalog/report.html",
+            {
+                **self.each_context(request),
+                "title": "Editorial report",
+                "native": "native" in request.GET,
+                "csp_nonce": nonce,
+            },
+        )
         if nonce:
-            response["Content-Security-Policy"] = f"script-src 'nonce-{nonce}'; object-src 'none'; base-uri 'self'"
+            response["Content-Security-Policy"] = (
+                f"script-src 'nonce-{nonce}'; object-src 'none'; base-uri 'self'"
+            )
         return response
 
 
 editorial_site = EditorialSite(name="editorial")
-for model, cls in [(Book, BookAdmin), (Author, AuthorAdmin), (Tag, admin.ModelAdmin), (Edition, EditionAdmin)]:
+for model, cls in [
+    (Book, BookAdmin),
+    (Author, AuthorAdmin),
+    (Tag, admin.ModelAdmin),
+    (Edition, EditionAdmin),
+]:
     editorial_site.register(model, cls)
