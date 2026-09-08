@@ -1,5 +1,5 @@
 include LICENSE README.md pyproject.toml
-recursive-include src/admin_htmx *.py py.typed *.html *.js *.css *LICENSE
+recursive-include src/admin_htmx *.py py.typed *.html *.js *LICENSE
 recursive-include tests *.py
 recursive-include example *.py *.html *.js
 recursive-include docs *.md

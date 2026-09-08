@@ -9,6 +9,7 @@
     let hydrating = false;
     let requests = 0;
     let navigated = false;
+    let stylesReady = Promise.resolve();
     const labels = document.querySelector('meta[name="admin-htmx-labels"]')?.dataset || {};
     const root = document.querySelector('meta[name="admin-htmx-root"]')?.content;
     const emit = (name, detail = {}) => document.dispatchEvent(new CustomEvent(`admin-htmx:${name}`, {detail}));
@@ -36,20 +37,22 @@
     function status() {
         let box = document.getElementById('admin-htmx-status');
         if (!box) {
-            box = document.createElement('div');
+            box = document.createElement('p');
+            box.className = 'visually-hidden';
             box.id = 'admin-htmx-status';
             box.setAttribute('role', 'status');
             box.setAttribute('aria-live', 'polite');
-            document.body.append(box);
+            (document.getElementById('header') || document.getElementById('content') || document.body).append(box);
         }
         return box;
     }
 
     function busy() {
         const active = hydrating || requests > 0;
-        document.body.classList.toggle('admin-htmx-busy', active);
         document.getElementById('content-start')?.setAttribute('aria-busy', String(active));
         if (active) {
+            status().className = 'visually-hidden';
+            (document.getElementById('header') || document.getElementById('content') || document.body).append(status());
             status().textContent = labels.loading || 'Loading…';
             status().dataset.state = 'loading';
         } else if (status().dataset.state !== 'error') {
@@ -61,6 +64,8 @@
     function error(message) {
         status().textContent = message || labels.error || 'The request could not be completed. Your entries are still here. Please try again.';
         status().dataset.state = 'error';
+        status().className = 'errornote';
+        document.getElementById('content')?.prepend(status());
         status().setAttribute('tabindex', '-1');
         status().focus();
         emit('error', {message});
@@ -192,7 +197,6 @@
     }
 
     function decorate() {
-        document.body.classList.add('admin-htmx');
         document.body.setAttribute('hx-history-elt', '');
         const disabled = ' [data-admin-htmx="off"], [hx-boost="false"]';
         document.querySelectorAll('a[href], form').forEach(el => {
@@ -210,41 +214,8 @@
             el.setAttribute('hx-swap', 'outerSync');
             el.setAttribute('hx-sync', 'body:drop');
             el.setAttribute('hx-headers', '{"X-Admin-HTMX":"true"}');
+            if (form && !el.hasAttribute('hx-disable')) el.setAttribute('hx-disable', 'findAll input[type=submit]:not(:disabled), findAll button[type=submit]:not(:disabled), findAll button:not([type]):not(:disabled)');
             if (!form || el.method.toLowerCase() === 'get') el.setAttribute('hx-push-url', 'true');
-        });
-        const sidebar = document.getElementById('nav-sidebar');
-        if (sidebar && !document.getElementById('admin-htmx-nav')) {
-            const button = document.createElement('button');
-            button.id = 'admin-htmx-nav';
-            button.type = 'button';
-            button.textContent = labels.navigation || 'Navigation';
-            button.setAttribute('aria-controls', 'nav-sidebar');
-            button.setAttribute('aria-expanded', 'false');
-            button.addEventListener('click', () => {
-                const open = document.body.classList.toggle('admin-htmx-nav-open');
-                button.setAttribute('aria-expanded', String(open));
-                if (open) sidebar.querySelector('input, a')?.focus();
-            });
-            document.getElementById('header')?.append(button);
-        }
-        const filters = document.getElementById('changelist-filter');
-        if (filters && !document.getElementById('admin-htmx-filters')) {
-            const button = document.createElement('button');
-            button.id = 'admin-htmx-filters';
-            button.type = 'button';
-            button.textContent = labels.filters || 'Filters';
-            button.setAttribute('aria-controls', filters.id);
-            button.setAttribute('aria-expanded', 'false');
-            button.addEventListener('click', () => {
-                const open = filters.classList.toggle('admin-htmx-filters-open');
-                button.setAttribute('aria-expanded', String(open));
-            });
-            document.querySelector('#changelist .changelist-form-container')?.prepend(button);
-        }
-        document.querySelectorAll('.results, .tabular.inline-related').forEach(el => {
-            el.setAttribute('tabindex', '0');
-            el.setAttribute('role', 'region');
-            el.setAttribute('aria-label', 'Scrollable table');
         });
         window.htmx.process(document.body);
     }
@@ -253,6 +224,7 @@
         hydrating = true;
         busy();
         try {
+            await stylesReady;
             let newActions = false;
             const deferred = [];
             for (const node of document.querySelectorAll('[data-admin-htmx-script]')) {
@@ -282,33 +254,43 @@
     }
 
     function updateHead(doc) {
-        const desired = [...doc.head.querySelectorAll('link[rel="stylesheet"], style')];
-        document.head.querySelectorAll('[data-admin-htmx-script]').forEach(el => el.remove());
-        doc.head.querySelectorAll('[data-admin-htmx-script]').forEach(el => document.head.append(el.cloneNode(true)));
-        document.head.querySelectorAll('[data-admin-htmx-head]').forEach(el => el.remove());
-        const existing = new Set([...document.head.querySelectorAll('link[rel="stylesheet"]')].map(el => el.href));
-        desired.forEach(el => {
-            if (el.tagName === 'LINK' && existing.has(el.href)) return;
-            const clone = el.cloneNode(true);
-            if (nonce) clone.nonce = nonce;
-            clone.dataset.adminHtmxHead = '';
-            document.head.append(clone);
-        });
-        const css = document.querySelector('link[href*="admin_htmx/admin"]');
-        if (css) document.head.append(css);
+        const selector = 'link[rel="stylesheet"], style';
+        const existing = [...document.head.querySelectorAll(selector)];
+        const pending = [];
+        const signature = element => JSON.stringify([
+            element.tagName,
+            [...element.attributes].filter(attr => attr.name !== 'nonce')
+                .map(attr => [attr.name, attr.value]).sort(),
+            element.textContent,
+        ]);
+        // Match the incoming document's stylesheet set AND cascade order. Keeping
+        // a previous form/list stylesheet would subtly restyle later pages.
+        for (const incoming of doc.head.querySelectorAll(selector)) {
+            const index = existing.findIndex(element => signature(element) === signature(incoming));
+            let element;
+            if (index >= 0) {
+                [element] = existing.splice(index, 1);
+            } else {
+                element = incoming.cloneNode(true);
+                if (nonce) element.nonce = nonce;
+                if (element.tagName === 'LINK') {
+                    pending.push(new Promise((resolve, reject) => {
+                        element.onload = resolve;
+                        element.onerror = () => reject(new Error(`Could not load ${element.href}`));
+                    }));
+                }
+            }
+            document.head.append(element);
+        }
+        existing.forEach(element => element.remove());
+        stylesReady = Promise.all(pending);
+        document.head.querySelectorAll('[data-admin-htmx-script]').forEach(element => element.remove());
+        doc.head.querySelectorAll('[data-admin-htmx-script]').forEach(element => document.head.append(element.cloneNode(true)));
         ['lang', 'dir'].forEach(attr => document.documentElement.setAttribute(attr, doc.documentElement.getAttribute(attr) || ''));
     }
 
-    window.AdminHTMX = {version: '0.1.0', hydrate, get busy() { return hydrating || requests > 0; }, get listenerCount() { return pageListeners.length; }};
+    window.AdminHTMX = {version: '0.1.1', hydrate, get busy() { return hydrating || requests > 0; }, get listenerCount() { return pageListeners.length; }};
     if (!root || document.body.classList.contains('popup') || !document.querySelector('meta[name="admin-htmx-enhanced"]')) return;
-    document.addEventListener('keydown', event => {
-        if (event.key === 'Escape' && document.body.classList.contains('admin-htmx-nav-open')) {
-            document.body.classList.remove('admin-htmx-nav-open');
-            const button = document.getElementById('admin-htmx-nav');
-            button?.setAttribute('aria-expanded', 'false');
-            button?.focus();
-        }
-    });
     document.addEventListener('htmx:config:request', event => {
         const ctx = event.detail.ctx;
         if (owned(ctx)) ctx.request.headers['X-Admin-HTMX'] = 'true';

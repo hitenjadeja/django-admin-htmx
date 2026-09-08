@@ -1,5 +1,6 @@
 """Real Chromium regression tests against Django's live server, not mocked HTML."""
 import json
+import base64
 import os
 import re
 from pathlib import Path
@@ -55,7 +56,7 @@ def login(page, live_server, username="admin", password="Local-demo-2026!"):
     page.locator('#id_username').fill(username)
     page.locator('#id_password').fill(password)
     page.locator('input[type=submit]').click()
-    expect(page.locator('body')).not_to_have_class('login admin-htmx')
+    expect(page.locator('body')).not_to_have_class(re.compile(r'\blogin\b'))
     expect(page.locator('h1')).to_contain_text('Workspace overview')
     ready(page)
 
@@ -315,24 +316,16 @@ def test_mobile_navigation_filters_forms_and_password_change(page, live_server, 
     login(page, live_server)
     shot(page, '22-mobile-dashboard')
     books(page)
-    assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
-    assert page.locator('.results').bounding_box()['width'] >= 350
+    expect(page.locator('#admin-htmx-nav, #admin-htmx-filters')).to_have_count(0)
+    expect(page.locator('#nav-sidebar')).to_be_hidden()
     shot(page, '23-mobile-list')
-    page.locator('#admin-htmx-nav').click()
-    expect(page.locator('#nav-sidebar')).to_be_visible()
-    expect(page.locator('#admin-htmx-nav')).to_have_attribute('aria-expanded', 'true')
-    assert page.locator('#nav-sidebar').bounding_box()['x'] >= 0
-    assert page.locator('#nav-sidebar').bounding_box()['width'] <= 390
+    nav(page, '.breadcrumbs a[href="/admin/catalog/"]')
     shot(page, '24-mobile-navigation', full=False)
-    page.keyboard.press('Escape')
-    expect(page.locator('#admin-htmx-nav')).to_be_focused()
-    page.locator('#admin-htmx-filters').click()
+    books(page)
     expect(page.locator('#changelist-filter')).to_be_visible()
     shot(page, '26-mobile-filters')
     nav(page, '#changelist-filter a[href*="status__exact=draft"]')
     add_book(page, 'Mobile guide')
-    assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
-    assert page.locator('#id_title').bounding_box()['width'] <= page.locator('.form-row.field-title').bounding_box()['width'] - 20
     shot(page, '27-mobile-add-form')
     page.locator('[name=_save]').click()
     expect(page.locator('.messagelist')).to_contain_text('added successfully')
@@ -409,7 +402,9 @@ def test_busy_state_drops_duplicate_submissions(page, live_server, data):
     expect(page.locator('#admin-htmx-status')).to_contain_text('Loading')
     if os.environ.get('ADMIN_HTMX_SCREENSHOTS') == '1':
         page.screenshot(path=str(ROOT / 'evidence/screenshots/33-loading-feedback.png'), full_page=False)
-    page.locator('[name=_save]').click()
+    expect(page.locator('[name=_save]')).to_be_disabled()
+    expect(page.locator('#admin-htmx-status')).to_have_class('visually-hidden')
+    page.locator('#book_form').dispatch_event('submit')
     assert len(pending) == 1
     pending[0].continue_()
     page.unroute('**/admin/catalog/book/add/')
@@ -579,3 +574,115 @@ def test_user_creation_and_admin_password_reset(page, live_server, data):
     user.refresh_from_db()
     assert user.check_password('Reset-password-2026!')
     shot(page, '46-admin-password-reset')
+
+
+@pytest.mark.parametrize('viewport', [{'width': 1440, 'height': 1000}, {'width': 390, 'height': 844}], ids=['desktop', 'mobile'])
+@pytest.mark.parametrize('theme', ['light', 'dark'])
+def test_matches_unmodified_django_appearance(page, live_server, data, settings, viewport, theme):
+    """Compare actual pixels against Django's own base template, without this app."""
+    import copy
+    import django
+    from django.test import override_settings
+
+    page.set_viewport_size(viewport)
+    page.context.add_init_script(f'localStorage.setItem("theme", {json.dumps(theme)})')
+    native = page.context.new_page()
+    native.set_viewport_size(viewport)
+    templates = copy.deepcopy(settings.TEMPLATES)
+    templates[0]['APP_DIRS'] = False
+    templates[0]['OPTIONS']['loaders'] = [
+        ('django.template.loaders.locmem.Loader', {
+            'admin/base.html': (Path(django.__file__).parent / 'contrib/admin/templates/admin/base.html').read_text(),
+        }),
+        'django.template.loaders.app_directories.Loader',
+    ]
+    style_profile = """() => [...document.querySelectorAll('#header, #content, h1, .module, .form-row, .submit-row, #changelist-filter, #nav-sidebar, input:not([type=hidden]), select, textarea, button, .results')].filter(el => el.checkVisibility({checkVisibilityCSS: true}) && (!el.closest('details:not([open])') || el.closest('summary'))).map(el => {
+        const style = getComputedStyle(el);
+        const properties = ['fontFamily', 'fontSize', 'fontWeight', 'lineHeight', 'color', 'backgroundColor', 'padding', 'margin', 'borderRadius', 'borderWidth', 'borderColor', 'boxShadow', 'position', 'display', 'visibility', 'width', 'height'];
+        return {tag: el.tagName, id: el.id, styles: properties.map(key => [key, style[key]]), bounds: el.getBoundingClientRect().toJSON()};
+    })"""
+    records = []
+    directory = ROOT / 'evidence/style-parity' / django.get_version()
+    directory.mkdir(parents=True, exist_ok=True)
+    variant = f'{viewport["width"]}-{theme}'
+    marker = 'htmx-kept-this-document'
+    paths = [
+        ('login', '/admin/login/?next=/admin/'),
+        ('dashboard', '/admin/'),
+        ('app-index', '/admin/catalog/'),
+        ('changelist', '/admin/catalog/book/'),
+        ('change-form', f'/admin/catalog/book/{data["book"].pk}/change/'),
+        ('history', f'/admin/catalog/book/{data["book"].pk}/history/'),
+        ('delete', f'/admin/catalog/book/{data["book"].pk}/delete/'),
+        ('password', '/admin/password_change/'),
+        ('return-to-list', '/admin/catalog/book/'),
+    ]
+    for index, (name, path) in enumerate(paths):
+        with override_settings(ADMIN_HTMX_ENABLED=False, TEMPLATES=templates):
+            native.goto(live_server.url + path)
+            native.wait_for_load_state('networkidle')
+            expect(native.locator('script[src*="admin_htmx"]')).to_have_count(0)
+            native.mouse.move(0, 0)
+            native.evaluate('document.activeElement.blur(); window.scrollTo(0, 0)')
+            original = native.screenshot(full_page=True, animations='disabled')
+            native_styles = native.evaluate(style_profile)
+            sheets = native.locator('head link[rel=stylesheet]').evaluate_all('(els) => els.map(el => el.getAttribute("href"))')
+        if index == 0:
+            page.goto(live_server.url + path)
+        elif index > 1:
+            with page.expect_request(lambda request: request.url == live_server.url + path and request.headers.get('x-admin-htmx') == 'true') as request:
+                page.evaluate('''async path => await htmx.ajax('GET', path, {
+                    target: 'body', select: 'body', swap: 'outerSync', push: 'true',
+                    headers: {'X-Admin-HTMX': 'true'}
+                })''', path)
+            assert not request.value.is_navigation_request()
+        ready(page)
+        page.wait_for_load_state('networkidle')
+        expect(page.locator('link[href*="admin_htmx"], #admin-htmx-nav, #admin-htmx-filters')).to_have_count(0)
+        assert page.locator('head link[rel=stylesheet]').evaluate_all('(els) => els.map(el => el.getAttribute("href"))') == sheets
+        page.mouse.move(0, 0)
+        page.evaluate('document.activeElement.blur(); window.scrollTo(0, 0)')
+        enhanced_styles = page.evaluate(style_profile)
+        assert enhanced_styles == native_styles, f'{name}: computed styles or layout differ: ' + repr(next(((a, b) for a, b in zip(native_styles, enhanced_styles) if a != b), (len(native_styles), len(enhanced_styles))))
+        enhanced = page.screenshot(full_page=True, animations='disabled')
+        stem = f'{variant}-{name}'
+        if os.environ.get('ADMIN_HTMX_SCREENSHOTS') == '1' or original != enhanced:
+            (directory / f'{stem}-native.png').write_bytes(original)
+            (directory / f'{stem}-htmx.png').write_bytes(enhanced)
+        difference = {'changed_pixels': 0, 'max_channel_delta': 0, 'same_dimensions': True}
+        if original != enhanced:
+            difference = page.evaluate("""async urls => {
+                const images = await Promise.all(urls.map(async src => {
+                    const image = new Image(); image.src = src; await image.decode(); return image;
+                }));
+                if (images[0].width !== images[1].width || images[0].height !== images[1].height) return {same_dimensions: false};
+                const canvas = new OffscreenCanvas(images[0].width, images[0].height);
+                const ctx = canvas.getContext('2d');
+                const pixels = images.map(image => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(image, 0, 0);
+                    return ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+                });
+                let changed = 0, maximum = 0;
+                for (let i = 0; i < pixels[0].length; i += 4) {
+                    let delta = 0;
+                    for (let c = 0; c < 4; c++) delta = Math.max(delta, Math.abs(pixels[0][i+c] - pixels[1][i+c]));
+                    if (delta) changed++;
+                    maximum = Math.max(maximum, delta);
+                }
+                return {same_dimensions: true, changed_pixels: changed, max_channel_delta: maximum};
+            }""", ['data:image/png;base64,' + base64.b64encode(image).decode() for image in (original, enhanced)])
+        # Native browser buttons occasionally differ at a few anti-aliased corner
+        # pixels. Computed styles and element geometry must still match exactly.
+        matches = difference['same_dimensions'] and difference['max_channel_delta'] <= 8 and difference['changed_pixels'] <= 100
+        records.append({'page': name, 'viewport': viewport, 'theme': theme, 'matches_default': matches, **difference})
+        (directory / f'{variant}.json').write_text(json.dumps(records, indent=2) + '\n')
+        assert matches, f'{stem}: {difference}; see {directory}'
+        if index == 0:
+            page.evaluate(f'window.styleMarker = {json.dumps(marker)}')
+            page.locator('#id_username').fill('admin')
+            page.locator('#id_password').fill('Local-demo-2026!')
+            page.locator('input[type=submit]').click()
+            expect(page.locator('h1')).to_contain_text('Workspace overview')
+            ready(page)
+        assert page.evaluate('window.styleMarker') == marker
+    native.close()

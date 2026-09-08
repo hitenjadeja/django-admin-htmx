@@ -1,6 +1,6 @@
 # Capability and test coverage
 
-The inventory was created before implementation. The final suite maps each requested core capability to an actual check. This is coverage of representative stock admin behavior and the documented integration contract, not a claim to have exhaustively tested every possible ModelAdmin override or third-party widget.
+The inventory was created before implementation. Version 0.1.1 (2026-09-08) restores Django's default appearance; the custom theme and extra mobile controls from 0.1.0 are removed. The final suite maps each requested core capability to an actual check. This is coverage of representative stock admin behavior and the documented integration contract, not a claim to have exhaustively tested every possible ModelAdmin override or third-party widget.
 
 See VERIFICATION.md for the measured version matrix, exact totals, wheel-install results and limits. `tests/test_admin.py` contains backend/security/integration tests; `tests/test_browser.py` runs actual Chromium against a live Django server and checks JavaScript errors. `fresh_install/*/library/tests.py` verifies installed-wheel behavior in independent Django projects.
 
@@ -22,9 +22,10 @@ See VERIFICATION.md for the measured version matrix, exact totals, wheel-install
 | Uploads | Multipart bytes stored; attachment-clear clears model field | Actual file chooser upload, validation/reselection, saved contents |
 | Security | CSRF denied/accepted; permissions/view-only/nonstaff; escaped object content; adapter headers don't hijack another HTMX client | Read-only UI; lost session; nonce-only script policy survives HTMX navigation without unsafe-eval |
 | Middleware | GZip response contains enhanced HTML; ordering check; disabled mode/non-admin isolation | Same-document sentinel survives navigations and POST/redirect/GET flows |
-| Reactive UX | Server remains source of validation/errors | Busy/live-region feedback; one POST for double submit; failed response retains draft; recovery save; focus on errors/landmark; Escape closes mobile navigation |
+| Reactive UX | Server remains source of validation/errors | Visually hidden live-region feedback and native disabled submit controls; one POST for duplicate submission; failed response retains draft with a standard Django errornote; recovery save; focus on errors/landmark |
 | History/lifecycle | Full documents for direct and enhanced requests | Browser back/forward; no localStorage HTML snapshots; repeated widget counts and global-listener count stay stable |
-| Responsive UX | Stock markup and semantics preserved | 1440px desktop and 390px mobile; table uses usable width; table-only horizontal scrolling; menu stays on-screen; text controls fit their padded row |
+| Responsive UX | Stock markup and semantics preserved | 1440px desktop and 390px mobile; Django's original breakpoints, navigation, filters and form layout; native and enhanced pages are compared directly |
+| Default appearance | Package contains no CSS; base template leaves Django's responsive block untouched | Nine page states in each desktop/mobile × light/dark scenario; exact stylesheet order, visible computed styles and geometry; pixel comparison with a small native-control antialiasing allowance; real HTMX requests and persistent document marker |
 | Custom media/templates | Stock inheritance and script inventory/explicit opt-in | Unknown media gets native navigation; opted-in once script persists across HTMX navigation/history without rerunning |
 | No JavaScript | Same Django HTML forms/views | Login, create author, confirmation and deletion with JavaScript disabled |
 | Distribution | Wheel/sdist assets and metadata; check/migrations/collectstatic | Independent wheel import from site-packages; fresh project's own models; HTMX login, widgets, inline, save, desktop/mobile captures |
