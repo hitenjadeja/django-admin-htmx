@@ -14,3 +14,13 @@ repos:
         # Resolve test/dev dependencies in a temporary environment. The hook
         # checks the whole project, including commits that only delete files.
         args: [--isolated, --extra=test, --extra=dev]
+  - repo: local
+    hooks:
+      - id: test-coverage
+        name: Unit and Django integration tests (coverage >= 95%)
+        entry: uv run --isolated --extra=test python -m pytest tests -m 'not browser' --cov -q
+        language: python
+        additional_dependencies: ['uv>=0.8']
+        pass_filenames: false
+        always_run: true
+        require_serial: true

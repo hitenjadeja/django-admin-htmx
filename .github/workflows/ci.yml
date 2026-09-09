@@ -20,7 +20,7 @@ env:
 
 jobs:
   lint:
-    name: Ruff and ty
+    name: Pre-commit checks
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -53,7 +53,8 @@ jobs:
         env:
           DJANGO_SERIES: ${{ matrix.django }}
         run: python -m pip install -e '.[test]' "Django==$DJANGO_SERIES.*"
-      - run: python -m pytest -m 'not browser' -q
+      - name: Unit and Django integration tests (coverage >= 95%)
+        run: python -m pytest tests -m 'not browser' --cov -q
 
   browser:
     name: Chromium / Django ${{ matrix.django }}

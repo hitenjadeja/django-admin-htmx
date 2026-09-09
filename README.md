@@ -118,6 +118,7 @@ Open `/admin/` or `/editorial/`. The seed command creates local demonstration ac
 
 ```sh
 mkdir -p .cache/ms-playwright .cache/tmp
+.venvs/dev/bin/python -m pytest tests -m 'not browser' --cov -q
 PLAYWRIGHT_BROWSERS_PATH="$PWD/.cache/ms-playwright" .venvs/dev/bin/python -m playwright install chromium
 PLAYWRIGHT_BROWSERS_PATH="$PWD/.cache/ms-playwright" .venvs/dev/bin/python -m pytest tests -q
 

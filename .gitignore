@@ -19,6 +19,8 @@ evidence/browser-results/
 .env.*
 !.env.example
 .coverage
+.coverage.*
+coverage.xml
 htmlcov/
 .ruff_cache/
 # Local dependency resolution used by the ty pre-commit hook.

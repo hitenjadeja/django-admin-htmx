@@ -2,7 +2,43 @@
 
 The inventory was created before implementation. Version 0.1.1 (2026-09-08) restores Django's default appearance; the custom theme and extra mobile controls from 0.1.0 are removed. The final suite maps each requested core capability to an actual check. This is coverage of representative stock admin behavior and the documented integration contract, not a claim to have exhaustively tested every possible ModelAdmin override or third-party widget.
 
-See VERIFICATION.md for the measured version matrix, exact totals, wheel-install results and limits. `tests/test_admin.py` contains backend/security/integration tests; `tests/test_browser.py` runs actual Chromium against a live Django server and checks JavaScript errors. `fresh_install/*/library/tests.py` verifies installed-wheel behavior in independent Django projects.
+See VERIFICATION.md for the measured version matrix, exact totals, wheel-install results and limits. `tests/test_admin.py` contains backend/security/integration tests; `tests/test_middleware.py` and `tests/test_configuration.py` add focused unit tests; `tests/test_browser.py` runs actual Chromium against a live Django server and checks JavaScript errors. `fresh_install/*/library/tests.py` verifies installed-wheel behavior in independent Django projects.
+
+## Python coverage gate
+
+Pre-commit and every backend CI matrix job run:
+
+```sh
+python -m pytest tests -m 'not browser' --cov -q
+```
+
+The suite combines focused unit tests with integration tests using Django's test
+client, database, admin forms, permissions, CSRF handling and audit log. Coverage
+measures every Python module in `src/admin_htmx/`, including unexecuted modules;
+example code, tests, templates and JavaScript are outside that Python source
+scope. No package modules are omitted. `pyproject.toml` enables branch measurement
+and requires at least 95% total coverage (statements and branch destinations
+combined), with two decimal places and missing lines/branches shown on failure.
+
+Chromium end-to-end and installed-wheel integration checks remain separate CI
+requirements. They exercise browser behavior and packaging; the Python percentage
+does not claim JavaScript or template coverage. Run `python -m coverage html`
+after a coverage run for a browsable local report in `htmlcov/`.
+
+Coverage-gate verification on 2026-09-09, separate from historical release evidence:
+
+| Runtime | Unit + Django integration tests | Python coverage, including branches |
+|---|---|---|
+| Python 3.13.3 / Django 5.2 | 129 passed | 98.91% |
+| Python 3.13.3 / Django 6.0 | 129 passed | 98.36% |
+| Python 3.14.3 / Django 6.1.1 | 129 passed | 98.36% |
+
+The complete source suite also passed all 151 tests, including 22 Chromium cases,
+on Python 3.14.3 / Django 6.1.1. A deliberately incomplete coverage run (only the
+configuration unit tests) passed its nine tests but exited with failure at 20.77%
+coverage, confirming that the 95% gate rejects insufficient coverage.
+
+## Capability inventory
 
 | Capability | Backend/integration checks | Real browser checks |
 |---|---|---|

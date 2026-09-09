@@ -17,7 +17,8 @@ Use Python 3.12 or later. Create `.venvs/dev` and install `-e '.[test,dev]'`.
 Set `PLAYWRIGHT_BROWSERS_PATH="$PWD/.cache/ms-playwright"`, then install Chromium
 with `python -m playwright install chromium` (CI also needs `--with-deps`).
 
-- Backend changes: `python -m pytest -m 'not browser' -q`.
+- Backend changes: `python -m pytest tests -m 'not browser' --cov -q` (95% minimum
+  Python coverage, including branches).
 - UI, middleware or lifecycle changes: `python -m pytest tests -q`.
 - Packaging: `python -m build --outdir dist`,
   `python -m twine check --strict dist/*`, and

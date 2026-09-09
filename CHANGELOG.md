@@ -9,6 +9,9 @@ from a GitHub release.
 
 ### Added
 
+- A 95% minimum Python coverage gate, including branches, for unit and Django
+  integration tests in pre-commit and every backend CI matrix job. Focused tests
+  cover middleware response boundaries, script handling and configuration checks.
 - A slim progress bar and visible “Loading…” status after 200 ms for slow admin
   navigation and submissions, lasting through redirects and widget setup.
   Feedback follows Django's light/dark colors and reduced-motion preferences;
