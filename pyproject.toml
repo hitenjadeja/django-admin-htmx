@@ -39,8 +39,8 @@ dev = [
   "uv>=0.8",
   "pre-commit>=4.6,<5",
   # Keep these versions aligned with .pre-commit-config.yaml.
-  "ruff==0.16.6",
-  "ty==0.0.79",
+  "ruff==0.16.7",
+  "ty==0.0.80",
   "django-stubs>=6.1,<6.2",
 ]
 
